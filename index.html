@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>terminalstate — payment callbacks, audits and integrations</title>
+<meta name="description" content="Read-only audits of payment webhook and callback delivery, discrepancy forensics, and payment provider integrations.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6.5' fill='none' stroke='%23222' stroke-width='1.5'/%3E%3Ccircle cx='8' cy='8' r='3.5' fill='%23222'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --fg: #1c1c1a;
+    --muted: #62625d;
+    --rule: #e2e0d9;
+    --accent: #0f6b5c;
+    --card: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141513;
+      --fg: #e7e6e1;
+      --muted: #9d9c95;
+      --rule: #2c2d29;
+      --accent: #5fc3ad;
+      --card: #1b1c19;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  main { max-width: 44rem; margin: 0 auto; padding: 3.5rem 1rem 4rem; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  a:hover { text-decoration-thickness: 2px; }
+  code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.92em; }
+  header { margin-bottom: 2.5rem; }
+  .brand { display: flex; align-items: center; gap: 0.6rem; font-size: 1.05rem; font-weight: 600; }
+  .brand svg { width: 1.3rem; height: 1.3rem; flex: none; }
+  .brand circle.ring { stroke: var(--fg); }
+  .brand circle.dot { fill: var(--fg); }
+  h1 { font-size: clamp(1.9rem, 5vw, 2.5rem); line-height: 1.2; margin: 1.6rem 0 1rem; letter-spacing: -0.01em; }
+  h2 { font-size: 1.25rem; margin: 3rem 0 0.8rem; padding-top: 1.6rem; border-top: 1px solid var(--rule); }
+  p { margin: 0 0 1rem; }
+  .lead { font-size: 1.12rem; }
+  .muted { color: var(--muted); }
+  .services { list-style: none; padding: 0; margin: 1.2rem 0 0; display: grid; gap: 0.9rem; }
+  .services li { background: var(--card); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; }
+  .services h3 { font-size: 1.05rem; margin: 0 0 0.15rem; }
+  .services .terms { color: var(--muted); font-size: 0.93rem; margin-bottom: 0.45rem; }
+  .services p { margin: 0; }
+  ol.steps { padding-left: 1.3rem; margin: 0.8rem 0 0; }
+  ol.steps li { margin-bottom: 0.6rem; padding-left: 0.2rem; }
+  ul.cases { padding-left: 1.2rem; margin: 0.6rem 0 0; }
+  ul.cases li { margin-bottom: 0.7rem; }
+  footer { margin-top: 3.5rem; padding-top: 1.2rem; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="brand">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><circle class="ring" cx="8" cy="8" r="6.5" fill="none" stroke-width="1.5"/><circle class="dot" cx="8" cy="8" r="3.5"/></svg>
+    <span class="mono">terminalstate</span>
+  </div>
+  <h1>Payments that stop short of a terminal state</h1>
+  <p class="lead">I connect payment providers and find out why payments hang: webhooks, retries, idempotency, reconciliation. Python and Django, Celery, Kafka, PostgreSQL; ten years on production systems where a bug costs money.</p>
+</header>
+
+<section>
+  <h2>Paid at the provider, pending on your side?</h2>
+  <p>A payment that sits in <code>pending</code> for hours is almost never stuck at the provider. The money moved, or didn't, within seconds. What is stuck is your knowledge of it: the callback carrying the final status was never applied. Between the provider and the row in your database there are seven places where that happens, and each one has its own check.</p>
+  <p>The map, with the incidents behind it: <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/lost-callbacks.md">Seven places a webhook dies between the provider and your database</a>.</p>
+</section>
+
+<section>
+  <h2>Work</h2>
+  <ul class="services">
+    <li>
+      <h3>Callback delivery audit</h3>
+      <div class="terms">5–7 days · $2,500–4,000</div>
+      <p>Read-only: your logs, exports and database. Nothing is written and nothing is deployed. You get a document: where callbacks are lost, what to fix now, what can wait, and where the same thing will break again in six months.</p>
+    </li>
+    <li>
+      <h3>Discrepancy forensics</h3>
+      <div class="terms">1–2 weeks · $3,000–6,000</div>
+      <p>When the money doesn't add up between the provider, your ledger and the bank. The cause, confirmed on your data rather than argued from the code, and a read-only check you keep running afterwards.</p>
+    </li>
+    <li>
+      <h3>Payment provider integration</h3>
+      <div class="terms">2–4 weeks · $6,000–12,000</div>
+      <p>A new provider in production: webhook signatures per its docs, a status mapping that covers every combination it sends, a second path to the final status besides the callback, tests on real samples, and a runbook.</p>
+    </li>
+    <li>
+      <h3>Incident retainer</h3>
+      <div class="terms">$2,000–4,000 a month</div>
+      <p>A set number of hours each month for stuck payments, queues and PostgreSQL under payment load.</p>
+    </li>
+  </ul>
+  <p class="muted" style="margin-top:1rem">Diagnostics are fixed-price, 50% upfront. The first stage needs read-only access only.</p>
+</section>
+
+<section>
+  <h2>How an audit starts</h2>
+  <ol class="steps">
+    <li>You describe the symptom and send the id of one stuck payment. I reply with which of the seven places it usually is, and what I would need to read.</li>
+    <li>You export what you can: payments and their status history, inbound webhook logs, delivery attempts. <a href="https://github.com/terminalstate/callback-audit">callback-audit</a> runs the first pass on those files, on your side if you prefer.</li>
+    <li>Within a week: the document, and a walk-through of it.</li>
+  </ol>
+</section>
+
+<section>
+  <h2>Public work</h2>
+  <p><a href="https://github.com/terminalstate/callback-audit">callback-audit</a> is a read-only tool that runs the checks that can be run from exports and tells you which place to look at next. MIT-licensed.</p>
+  <p>Real bugs in widely-used payment integrations, reproduced against their own code and reported upstream:</p>
+  <ul class="cases">
+    <li><strong>WooCommerce Stripe Gateway</strong>: a webhook that fails signature validation is answered 204, so Stripe never retries and the order stays pending. <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-woocommerce-stripe-204.md">Case</a> · <a href="https://github.com/woocommerce/woocommerce-gateway-stripe/issues/4150">upstream</a></li>
+    <li><strong>Mollie Payments for WooCommerce</strong>: when the status request to Mollie fails, the webhook still answers 200, so Mollie stops retrying. <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-mollie-woocommerce-200.md">Case</a> · <a href="https://github.com/mollie/WooCommerce/issues/1304">upstream</a></li>
+    <li><strong>Razorpay for WooCommerce</strong>: with the Payment Action set to "Authorize", the order of an authorized payment is marked Failed, and the cron marks events done even when the payment couldn't be fetched. <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-razorpay-woocommerce.md">Case</a> · <a href="https://github.com/razorpay/razorpay-woocommerce/issues/670">upstream</a></li>
+    <li><strong>Odoo with Mollie</strong>: a failed status request is acknowledged with 200, so the transaction stays in draft. <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-odoo-mollie-200.md">Case</a> · <a href="https://github.com/odoo/odoo/issues/290678">upstream</a></li>
+  </ul>
+</section>
+
+<section>
+  <h2>Contact</h2>
+  <p>Email: <a href="mailto:hello@terminalstate.dev">hello@terminalstate.dev</a>. A symptom and one payment id are enough to start.</p>
+</section>
+
+<footer>
+  <p>terminalstate · no cookies, no trackers · <a href="https://github.com/terminalstate">GitHub</a></p>
+</footer>
+</main>
+</body>
+</html>
