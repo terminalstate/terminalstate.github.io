@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>terminalstate — AI features that survive production</title>
+<meta name="description" content="Putting language models into production backends: validated output, timeouts and retries, idempotent tool calls, cost ceilings, and evals on your own data.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6.5' fill='none' stroke='%23222' stroke-width='1.5'/%3E%3Ccircle cx='8' cy='8' r='3.5' fill='%23222'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --fg: #1c1c1a;
+    --muted: #62625d;
+    --rule: #e2e0d9;
+    --accent: #0f6b5c;
+    --card: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141513;
+      --fg: #e7e6e1;
+      --muted: #9d9c95;
+      --rule: #2c2d29;
+      --accent: #5fc3ad;
+      --card: #1b1c19;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  main { max-width: 44rem; margin: 0 auto; padding: 3.5rem 1rem 4rem; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  a:hover { text-decoration-thickness: 2px; }
+  code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.92em; }
+  header { margin-bottom: 2.5rem; }
+  .brand { display: flex; align-items: center; gap: 0.6rem; font-size: 1.05rem; font-weight: 600; }
+  .brand svg { width: 1.3rem; height: 1.3rem; flex: none; }
+  .brand circle.ring { stroke: var(--fg); }
+  .brand circle.dot { fill: var(--fg); }
+  .nav { font-size: 0.95rem; margin-top: 0.5rem; }
+  .nav a { color: var(--muted); }
+  h1 { font-size: clamp(1.9rem, 5vw, 2.5rem); line-height: 1.2; margin: 1.6rem 0 1rem; letter-spacing: -0.01em; }
+  h2 { font-size: 1.25rem; margin: 3rem 0 0.8rem; padding-top: 1.6rem; border-top: 1px solid var(--rule); }
+  p { margin: 0 0 1rem; }
+  .lead { font-size: 1.12rem; }
+  .muted { color: var(--muted); }
+  .services { list-style: none; padding: 0; margin: 1.2rem 0 0; display: grid; gap: 0.9rem; }
+  .services li { background: var(--card); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; }
+  .services h3 { font-size: 1.05rem; margin: 0 0 0.15rem; }
+  .services .terms { color: var(--muted); font-size: 0.93rem; margin-bottom: 0.45rem; }
+  .services p { margin: 0; }
+  ol.steps { padding-left: 1.3rem; margin: 0.8rem 0 0; }
+  ol.steps li { margin-bottom: 0.6rem; padding-left: 0.2rem; }
+  ol.places { padding-left: 1.3rem; margin: 0.8rem 0 0; }
+  ol.places li { margin-bottom: 0.5rem; padding-left: 0.2rem; }
+  ul.cases { padding-left: 1.2rem; margin: 0.6rem 0 0; }
+  ul.cases li { margin-bottom: 0.7rem; }
+  footer { margin-top: 3.5rem; padding-top: 1.2rem; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="brand">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><circle class="ring" cx="8" cy="8" r="6.5" fill="none" stroke-width="1.5"/><circle class="dot" cx="8" cy="8" r="3.5"/></svg>
+    <span class="mono">terminalstate</span>
+  </div>
+  <div class="nav"><a href="/">Payments</a> · AI integration</div>
+  <h1>AI features that behave on the bad day</h1>
+  <p class="lead">I put language models into a production backend and make them behave when the input is ugly: output you can validate, timeouts and retries, tool calls that are safe to repeat, a ceiling on cost, and an eval on your own data. Python and Django, Celery, PostgreSQL — the same discipline that keeps a payment integration from charging twice.</p>
+</header>
+
+<section>
+  <h2>Works in the demo, breaks in production?</h2>
+  <p>A model feature that passed every eval and then returned the wrong thing under real inputs is rarely a model problem. A model call is one more external dependency you don't control: it times out, it answers twice, it hands back malformed JSON, and it can cost ten times on a bad input what it cost in the demo. Between the prompt and the row in your database there are a few places where that turns into a bug, and each one has its own check.</p>
+  <ol class="places">
+    <li>The output isn't validated against a schema, so a malformed or half-empty answer is treated as success.</li>
+    <li>A slow call blocks the request instead of going to a queue.</li>
+    <li>A timeout or rate-limit isn't retried — or is retried without an idempotency key, so a tool action runs twice.</li>
+    <li>Cost and tokens aren't capped or logged, so one adversarial input is a bill.</li>
+    <li>There is no eval on your own data, so "it works" is a feeling, not a number.</li>
+    <li>Nothing records what the model was asked and what it answered, so the one call that went wrong can't be debugged.</li>
+  </ol>
+</section>
+
+<section>
+  <h2>Work</h2>
+  <ul class="services">
+    <li>
+      <h3>AI feature production-readiness review</h3>
+      <div class="terms">5–7 days · $2,500–4,000</div>
+      <p>One model-backed feature. Read-only: your traces, logs, prompts and the code around the call. You get a document — where it fails on real inputs, what to fix first, what can wait — and a small eval set built from your own data that you keep running afterwards.</p>
+    </li>
+    <li>
+      <h3>Prototype to production</h3>
+      <div class="terms">1–3 weeks · $4,000–9,000</div>
+      <p>An AI prototype that works in the demo, made to survive real data and real load: the failure modes above, closed one by one, and the one decision — harden it or drop it — made on evidence rather than on the demo.</p>
+    </li>
+    <li>
+      <h3>Model integration in production</h3>
+      <div class="terms">2–4 weeks · $6,000–12,000</div>
+      <p>A model API wired into your backend the way a payment provider should be: structured output you validate, timeouts and retries, idempotent tool calls, slow work on a queue, cost and latency ceilings, logs of what was asked and answered, tests on real samples, and a runbook.</p>
+    </li>
+    <li>
+      <h3>Incident retainer</h3>
+      <div class="terms">$2,000–4,000 a month</div>
+      <p>A set number of hours each month for model calls, queues and cost under load — shared with payment work if you have both.</p>
+    </li>
+  </ul>
+  <p class="muted" style="margin-top:1rem">Diagnostics are fixed-price, 50% upfront. The first stage needs read-only access only. AI-assisted development is how I work day to day, so small integrations usually ship in days, with tests.</p>
+</section>
+
+<section>
+  <h2>How a review starts</h2>
+  <ol class="steps">
+    <li>You describe the symptom and send one call that went wrong — the input, what you expected, what came back. I reply with which of the places above it usually is, and what I would need to read.</li>
+    <li>You export what you can: traces or logs of the calls, the prompt, a sample of real inputs. The first pass runs on those files, on your side if you prefer.</li>
+    <li>Within a week: the document, an eval set built from your data, and a walk-through of both.</li>
+  </ol>
+</section>
+
+<section>
+  <h2>Public work</h2>
+  <p><strong>Six models on one contract-extraction task.</strong> The same prompt through six model APIs, scored against human labels on 83 public non-disclosure agreements. All six came out within noise of each other (F1 0.88–0.89), while the cost ran from $0.42 to $14.88 per thousand documents. Most of the remaining errors were made by most of the models at once, and read against the documents they come mainly from how the labels write names and define fields — which is why an eval starts with the definitions. Eleven first answers failed local validation — a bare year where a date belonged, a misspelled key, reasoning that ran out of room — so the check stays even when the API promises structure. Standard library, reproducible with one command. <a href="https://github.com/terminalstate/extraction-bench">github.com/terminalstate/extraction-bench</a></p>
+  <p><strong>The same discipline, on webhooks.</strong> <a href="https://github.com/terminalstate/callback-audit">callback-audit</a> is a read-only tool that finds where a payment provider's callback is lost between the provider and your database — the webhook equivalent of the checks above: validate before you acknowledge, retry safely, never treat a repeat as new. MIT-licensed, with four real bugs reproduced against widely-used integrations and reported upstream. <a href="/">See the payments page</a>.</p>
+</section>
+
+<section>
+  <h2>Contact</h2>
+  <p>Email: <a href="mailto:hello@terminalstate.dev">hello@terminalstate.dev</a>. One call that went wrong is enough to start.</p>
+</section>
+
+<footer>
+  <p>terminalstate · no cookies, no trackers · <a href="https://github.com/terminalstate">GitHub</a></p>
+</footer>
+</main>
+</body>
+</html>

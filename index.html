@@ -42,6 +42,8 @@
   .brand svg { width: 1.3rem; height: 1.3rem; flex: none; }
   .brand circle.ring { stroke: var(--fg); }
   .brand circle.dot { fill: var(--fg); }
+  .nav { font-size: 0.95rem; margin-top: 0.5rem; }
+  .nav a { color: var(--muted); }
   h1 { font-size: clamp(1.9rem, 5vw, 2.5rem); line-height: 1.2; margin: 1.6rem 0 1rem; letter-spacing: -0.01em; }
   h2 { font-size: 1.25rem; margin: 3rem 0 0.8rem; padding-top: 1.6rem; border-top: 1px solid var(--rule); }
   p { margin: 0 0 1rem; }
@@ -66,6 +68,7 @@
     <svg viewBox="0 0 16 16" aria-hidden="true"><circle class="ring" cx="8" cy="8" r="6.5" fill="none" stroke-width="1.5"/><circle class="dot" cx="8" cy="8" r="3.5"/></svg>
     <span class="mono">terminalstate</span>
   </div>
+  <div class="nav">Payments · <a href="/ai/">AI integration</a></div>
   <h1>Payments that stop short of a terminal state</h1>
   <p class="lead">I connect payment providers and find out why payments hang: webhooks, retries, idempotency, reconciliation. Python and Django, Celery, Kafka, PostgreSQL — on production systems where a bug costs money.</p>
 </header>
@@ -122,6 +125,7 @@
     <li><strong>Razorpay for WooCommerce</strong>: with the Payment Action set to "Authorize", the order of an authorized payment is marked Failed, and the cron marks events done even when the payment couldn't be fetched. <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-razorpay-woocommerce.md">Case</a> · <a href="https://github.com/razorpay/razorpay-woocommerce/issues/670">upstream</a></li>
     <li><strong>Odoo with Mollie</strong>: a failed status request is acknowledged with 200, so the transaction stays in draft. <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-odoo-mollie-200.md">Case</a> · <a href="https://github.com/odoo/odoo/issues/290678">upstream</a></li>
   </ul>
+  <p style="margin-top:1rem"><strong>AI integration.</strong> The same discipline, applied to model APIs. Six models on one contract-extraction task: accuracy a tie, cost 35× apart, most errors from the labels — <a href="https://github.com/terminalstate/extraction-bench">extraction-bench</a>. More on the <a href="/ai/">AI integration</a> page.</p>
 </section>
 
 <section>
