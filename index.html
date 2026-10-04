@@ -90,7 +90,7 @@
     <li>
       <h3>Discrepancy forensics</h3>
       <div class="terms">1–2 weeks · $3,000–6,000</div>
-      <p>When the money doesn't add up between the provider, your ledger and the bank. The cause, confirmed on your data rather than argued from the code, and a read-only check you keep running afterwards.</p>
+      <p>When the money doesn't add up between the provider, your ledger and the bank. The cause, confirmed on your data rather than argued from the code, and a read-only check you keep running afterwards. The check is open: <a href="https://github.com/terminalstate/payout-bridge">payout-bridge</a>.</p>
     </li>
     <li>
       <h3>Payment provider integration</h3>
@@ -118,6 +118,7 @@
 <section>
   <h2>Public work</h2>
   <p><a href="https://github.com/terminalstate/callback-audit">callback-audit</a> is a read-only tool that runs the checks that can be run from exports and tells you which place to look at next. MIT-licensed.</p>
+  <p><a href="https://github.com/terminalstate/payout-bridge">payout-bridge</a> walks from your ledger to the provider's report (Stripe, Adyen) to the bank statement and names every difference: payments still pending on your side, refunds and disputes your books never saw, double charges, fees above the contract, payouts that arrived short or not at all. Read-only, MIT-licensed.</p>
   <p>Real bugs in widely-used payment integrations, reproduced against their own code and reported upstream:</p>
   <ul class="cases">
     <li><strong>WooCommerce Stripe Gateway</strong>: a webhook that fails signature validation is answered 204, so Stripe never retries and the order stays pending. <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-woocommerce-stripe-204.md">Case</a> · <a href="https://github.com/woocommerce/woocommerce-gateway-stripe/issues/4150">upstream</a></li>
