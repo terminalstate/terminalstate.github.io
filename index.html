@@ -59,6 +59,8 @@
   h2 { font-size: 1.25rem; margin: 3rem 0 0.8rem; padding-top: 1.6rem; border-top: 1px solid var(--rule); }
   p { margin: 0 0 1rem; }
   .lead { font-size: 1.12rem; }
+  .cta { margin: 1.2rem 0 0; }
+  .more { margin: 0.4rem 0 0; }
   .muted { color: var(--muted); }
   .services { list-style: none; padding: 0; margin: 1.2rem 0 0; display: grid; gap: 0.9rem; }
   .services li { background: var(--card); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; }
@@ -82,12 +84,25 @@
   <div class="nav">Payments · <a href="/ai/">AI integration</a> · <a href="/upstream/">Fixed upstream</a></div>
   <h1>Payments that stop short of a terminal state</h1>
   <p class="lead">I connect payment providers and find out why payments hang: webhooks, retries, idempotency, reconciliation. The bugs sit between the provider and your database, not in a particular language or framework, so the stack doesn't matter: the same failures turn up in WooCommerce and Magento, Odoo and Medusa, and in custom backends.</p>
+  <p class="cta">Write to <a href="mailto:hello@terminalstate.dev">hello@terminalstate.dev</a> — a symptom and one payment id are enough to start.</p>
 </header>
 
 <section>
   <h2>Paid at the provider, pending on your side?</h2>
   <p>A payment that sits in <code>pending</code> for hours is almost never stuck at the provider. The money moved, or didn't, within seconds. What is stuck is your knowledge of it: the callback carrying the final status was never applied. Between the provider and the row in your database there are seven places where that happens, and each one has its own check.</p>
   <p>The map, with the incidents behind it: <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/lost-callbacks.md">Seven places a webhook dies between the provider and your database</a>.</p>
+</section>
+
+<section>
+  <h2>Fixed upstream</h2>
+  <p>The same failures, found in open-source payment code and reproduced against each project's own code before they were reported. Of eighteen reports, six are fixed, two of them by my own pull requests, and three more are in progress. A few of them:</p>
+  <ul class="cases">
+    <li><strong>Bagisto · Razorpay</strong>: the amount was truncated instead of rounded, so totals like ₹19.99 were charged and no order was placed. Fixed by my PR. <a href="https://github.com/bagisto/bagisto/pull/11524">PR&nbsp;#11524</a></li>
+    <li><strong>Paid Memberships Pro · Stripe</strong>: the webhook answered 200 when re-fetching the event from Stripe failed, so Stripe never redelivered it. Fixed by my PRs. <a href="https://github.com/strangerstudios/paid-memberships-pro/pull/3890">PR&nbsp;#3890</a> · <a href="https://github.com/strangerstudios/paid-memberships-pro/pull/3898">PR&nbsp;#3898</a></li>
+    <li><strong>Adyen for Magento 2 · split payments</strong>: orders failed with “Full order amount has not been authorized” because authorised amounts were compared at a different precision than they are stored. Confirmed; Adyen is reviewing my patch. <a href="https://github.com/Adyen/adyen-magento2/pull/3379">PR&nbsp;#3379</a></li>
+    <li><strong>Odoo · Mollie</strong>: a failed status request to Mollie was acknowledged with 200, so the transaction stayed in draft. Fixed by Odoo. <a href="https://github.com/odoo/odoo/pull/290812">fix</a> · <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-odoo-mollie-200.md">case</a></li>
+  </ul>
+  <p class="more"><a href="/upstream/">All eighteen, and what happened to each</a></p>
 </section>
 
 <section>
@@ -130,15 +145,7 @@
   <h2>Public work</h2>
   <p><a href="https://github.com/terminalstate/callback-audit">callback-audit</a> is a read-only tool that runs the checks that can be run from exports and tells you which place to look at next. MIT-licensed.</p>
   <p><a href="https://github.com/terminalstate/payout-bridge">payout-bridge</a> walks from your ledger to the provider's report (Stripe, Adyen) to the bank statement and names every difference: payments still pending on your side, refunds and disputes your books never saw, double charges, fees above the contract, payouts that arrived short or not at all. Read-only, MIT-licensed.</p>
-  <p>Real bugs in widely-used payment integrations, reproduced against their own code and reported upstream:</p>
-  <ul class="cases">
-    <li><strong>WooCommerce Stripe Gateway</strong>: a webhook that fails signature validation is answered 204, so Stripe never retries and the order stays pending. <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-woocommerce-stripe-204.md">Case</a> · <a href="https://github.com/woocommerce/woocommerce-gateway-stripe/issues/4150">upstream</a></li>
-    <li><strong>Mollie Payments for WooCommerce</strong>: when the status request to Mollie fails, the webhook still answers 200, so Mollie stops retrying. <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-mollie-woocommerce-200.md">Case</a> · <a href="https://github.com/mollie/WooCommerce/issues/1304">upstream</a> (confirmed by Mollie)</li>
-    <li><strong>Razorpay for WooCommerce</strong>: with the Payment Action set to "Authorize", the order of an authorized payment is marked Failed, and the cron marks events done even when the payment couldn't be fetched. <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-razorpay-woocommerce.md">Case</a> · <a href="https://github.com/razorpay/razorpay-woocommerce/issues/670">upstream</a></li>
-    <li><strong>Odoo with Mollie</strong>: a failed status request is acknowledged with 200, so the transaction stays in draft. <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-odoo-mollie-200.md">Case</a> · <a href="https://github.com/odoo/odoo/issues/290678">upstream</a> (<a href="https://github.com/odoo/odoo/pull/290812">fixed by Odoo</a>)</li>
-  </ul>
-  <p style="margin-top:1rem">All eighteen reports and what happened to each: <a href="/upstream/">fixed upstream</a>. Six are fixed so far, two of them by my own pull requests.</p>
-  <p style="margin-top:1rem"><strong>AI integration.</strong> The same discipline, applied to model APIs. Six models on one contract-extraction task: accuracy a tie, cost 35× apart, most errors from the labels — <a href="https://github.com/terminalstate/extraction-bench">extraction-bench</a>. More on the <a href="/ai/">AI integration</a> page.</p>
+  <p><strong>AI integration.</strong> The same discipline, applied to model APIs. Six models on one contract-extraction task: accuracy a tie, cost 35× apart, most errors from the labels — <a href="https://github.com/terminalstate/extraction-bench">extraction-bench</a>. More on the <a href="/ai/">AI integration</a> page.</p>
 </section>
 
 <section>

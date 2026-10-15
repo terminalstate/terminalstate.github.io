@@ -83,14 +83,14 @@
   <div class="nav"><a href="/">Payments</a> · <a href="/ai/">AI integration</a> · Fixed upstream</div>
   <h1>Fixed upstream</h1>
   <p class="lead">Bugs in open-source payment code where a payment ends in the wrong state: the customer is charged and gets no order, or the webhook is acknowledged and the provider stops retrying. Each was reproduced against the project's own code before it was reported, with a test in the project's suite or a harness in <a href="https://github.com/terminalstate/callback-audit/tree/main/repro">callback-audit</a>.</p>
-  <p class="muted">Status as of 15 October 2026.</p>
+  <p class="muted">Status as of 16 October 2026.</p>
 </header>
 
 <section>
   <h2>Fixed (6)</h2>
   <ul class="cases">
     <li><strong>Bagisto · Razorpay</strong>: the order amount was truncated instead of rounded, so totals like ₹19.99 were charged but no order was placed. <span class="st">Fixed by my PR, merged 13 Oct.</span> <a href="https://github.com/bagisto/bagisto/issues/11523">#11523</a> · <a href="https://github.com/bagisto/bagisto/pull/11524">PR #11524</a></li>
-    <li><strong>Paid Memberships Pro · Stripe</strong>: the webhook answered 200 when re-fetching the event from Stripe failed, so Stripe never redelivered it. <span class="st">Fixed by my PR, merged 14 Oct.</span> <a href="https://github.com/strangerstudios/paid-memberships-pro/issues/3889">#3889</a> · <a href="https://github.com/strangerstudios/paid-memberships-pro/pull/3890">PR #3890</a></li>
+    <li><strong>Paid Memberships Pro · Stripe</strong>: the webhook answered 200 when re-fetching the event from Stripe failed, so Stripe never redelivered it. <span class="st">Fixed by my PRs, merged 14 and 15 Oct; the second covers scheduled webhook runs.</span> <a href="https://github.com/strangerstudios/paid-memberships-pro/issues/3889">#3889</a> · <a href="https://github.com/strangerstudios/paid-memberships-pro/pull/3890">PR #3890</a> · <a href="https://github.com/strangerstudios/paid-memberships-pro/pull/3898">PR #3898</a></li>
     <li><strong>Bagisto · PayPal Standard</strong>: a buyer who paid but didn't return to the store got no order, and every retry of PayPal's notification failed with 500. <span class="st">Fixed by the maintainers on 15 Oct, listed in the changelog.</span> <a href="https://github.com/bagisto/bagisto/issues/11531">#11531</a></li>
     <li><strong>Invoice Ninja · Stripe iDEAL, Bancontact, Klarna</strong>: no payment was recorded when the customer didn't come back from the bank. <span class="st">Fixed by the maintainers on 12 Oct.</span> <a href="https://github.com/invoiceninja/invoiceninja/issues/13341">#13341</a></li>
     <li><strong>django-payments · Sage Pay</strong>: the return route crashed on every real redirect, so no payment was ever confirmed. <span class="st">Fixed by the maintainer on 11 Oct.</span> <a href="https://github.com/jazzband/django-payments/issues/499">#499</a> · <a href="https://github.com/jazzband/django-payments/pull/500">PR #500</a></li>
