@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>terminalstate — payment bugs fixed upstream</title>
+<meta name="description" content="Bugs in open-source payment code where a payment ends in the wrong state, reproduced against the project's own code, reported upstream, and what happened to each.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://terminalstate.dev/upstream/">
+<meta property="og:title" content="terminalstate — payment bugs fixed upstream">
+<meta property="og:description" content="Bugs in open-source payment code where a payment ends in the wrong state, reproduced against the project's own code, reported upstream, and what happened to each.">
+<meta property="og:image" content="https://terminalstate.dev/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --fg: #1c1c1a;
+    --muted: #62625d;
+    --rule: #e2e0d9;
+    --accent: #0f6b5c;
+    --card: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141513;
+      --fg: #e7e6e1;
+      --muted: #9d9c95;
+      --rule: #2c2d29;
+      --accent: #5fc3ad;
+      --card: #1b1c19;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  main { max-width: 44rem; margin: 0 auto; padding: 3.5rem 1rem 4rem; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  a:hover { text-decoration-thickness: 2px; }
+  code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.92em; }
+  header { margin-bottom: 2.5rem; }
+  .brand { display: flex; align-items: center; gap: 0.6rem; font-size: 1.05rem; font-weight: 600; }
+  .brand svg { width: 2.6rem; height: 1.16rem; flex: none; }
+  .brand circle.start { fill: var(--accent); }
+  .brand line.path { stroke: var(--accent); }
+  .brand circle.ring { stroke: var(--fg); }
+  .brand circle.dot { fill: var(--fg); }
+  .nav { font-size: 0.95rem; margin-top: 0.5rem; }
+  .nav a { color: var(--muted); }
+  h1 { font-size: clamp(1.9rem, 5vw, 2.5rem); line-height: 1.2; margin: 1.6rem 0 1rem; letter-spacing: -0.01em; }
+  h2 { font-size: 1.25rem; margin: 3rem 0 0.8rem; padding-top: 1.6rem; border-top: 1px solid var(--rule); }
+  p { margin: 0 0 1rem; }
+  .lead { font-size: 1.12rem; }
+  .muted { color: var(--muted); }
+  .services { list-style: none; padding: 0; margin: 1.2rem 0 0; display: grid; gap: 0.9rem; }
+  .services li { background: var(--card); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; }
+  .services h3 { font-size: 1.05rem; margin: 0 0 0.15rem; }
+  .services .terms { color: var(--muted); font-size: 0.93rem; margin-bottom: 0.45rem; }
+  .services p { margin: 0; }
+  ol.steps { padding-left: 1.3rem; margin: 0.8rem 0 0; }
+  ol.steps li { margin-bottom: 0.6rem; padding-left: 0.2rem; }
+  ul.cases { padding-left: 1.2rem; margin: 0.6rem 0 0; }
+  ul.cases li { margin-bottom: 0.7rem; }
+  ul.cases .st { color: var(--muted); font-size: 0.93rem; }
+  footer { margin-top: 3.5rem; padding-top: 1.2rem; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="brand">
+    <svg viewBox="0 0 36 16" aria-hidden="true"><circle class="start" cx="3.4" cy="8" r="3.1"/><line class="path" x1="5.6" y1="8" x2="16.6" y2="8" stroke-width="2.6" stroke-linecap="round"/><circle class="ring" cx="28.2" cy="8" r="6.3" fill="none" stroke-width="1.9"/><circle class="dot" cx="28.2" cy="8" r="3.3"/></svg>
+    <span class="mono">terminalstate</span>
+  </div>
+  <div class="nav"><a href="/">Payments</a> · <a href="/ai/">AI integration</a> · Fixed upstream</div>
+  <h1>Fixed upstream</h1>
+  <p class="lead">Bugs in open-source payment code where a payment ends in the wrong state: the customer is charged and gets no order, or the webhook is acknowledged and the provider stops retrying. Each was reproduced against the project's own code before it was reported, with a test in the project's suite or a harness in <a href="https://github.com/terminalstate/callback-audit/tree/main/repro">callback-audit</a>.</p>
+  <p class="muted">Status as of 15 October 2026.</p>
+</header>
+
+<section>
+  <h2>Fixed (6)</h2>
+  <ul class="cases">
+    <li><strong>Bagisto · Razorpay</strong>: the order amount was truncated instead of rounded, so totals like ₹19.99 were charged but no order was placed. <span class="st">Fixed by my PR, merged 13 Oct.</span> <a href="https://github.com/bagisto/bagisto/issues/11523">#11523</a> · <a href="https://github.com/bagisto/bagisto/pull/11524">PR #11524</a></li>
+    <li><strong>Paid Memberships Pro · Stripe</strong>: the webhook answered 200 when re-fetching the event from Stripe failed, so Stripe never redelivered it. <span class="st">Fixed by my PR, merged 14 Oct.</span> <a href="https://github.com/strangerstudios/paid-memberships-pro/issues/3889">#3889</a> · <a href="https://github.com/strangerstudios/paid-memberships-pro/pull/3890">PR #3890</a></li>
+    <li><strong>Bagisto · PayPal Standard</strong>: a buyer who paid but didn't return to the store got no order, and every retry of PayPal's notification failed with 500. <span class="st">Fixed by the maintainers on 15 Oct, listed in the changelog.</span> <a href="https://github.com/bagisto/bagisto/issues/11531">#11531</a></li>
+    <li><strong>Invoice Ninja · Stripe iDEAL, Bancontact, Klarna</strong>: no payment was recorded when the customer didn't come back from the bank. <span class="st">Fixed by the maintainers on 12 Oct.</span> <a href="https://github.com/invoiceninja/invoiceninja/issues/13341">#13341</a></li>
+    <li><strong>django-payments · Sage Pay</strong>: the return route crashed on every real redirect, so no payment was ever confirmed. <span class="st">Fixed by the maintainer on 11 Oct.</span> <a href="https://github.com/jazzband/django-payments/issues/499">#499</a> · <a href="https://github.com/jazzband/django-payments/pull/500">PR #500</a></li>
+    <li><strong>Odoo · Mollie</strong>: a failed status request to Mollie was acknowledged with 200, so the transaction stayed in draft. <span class="st">Fixed by Odoo on 8 Oct.</span> <a href="https://github.com/odoo/odoo/issues/290678">#290678</a> · <a href="https://github.com/odoo/odoo/pull/290812">fix</a> · <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-odoo-mollie-200.md">case</a></li>
+  </ul>
+</section>
+
+<section>
+  <h2>Confirmed, fix in progress (3)</h2>
+  <ul class="cases">
+    <li><strong>Adyen for Magento 2 · split payments</strong>: the cause of “Full order amount has not been authorized”: authorised amounts were compared at a different precision than they are stored. <span class="st">Confirmed by the reporter; Adyen opened a ticket and is reviewing my patch.</span> <a href="https://github.com/Adyen/adyen-magento2/issues/3352">#3352</a> · <a href="https://github.com/Adyen/adyen-magento2/pull/3379">PR #3379</a></li>
+    <li><strong>Mollie for WooCommerce</strong>: the REST webhook answers 200 when the payment status can't be fetched, so Mollie stops retrying and paid orders stay pending. <span class="st">Confirmed by Mollie; they are preparing a patch.</span> <a href="https://github.com/mollie/WooCommerce/issues/1304">#1304</a> · <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-mollie-woocommerce-200.md">case</a></li>
+    <li><strong>Medusa · Stripe</strong>: the webhook signature is checked when the queued job runs, so a delivery already answered 200 is dropped if the job starts more than five minutes after Stripe signed it. <span class="st">My PR passed Medusa's automated review and waits for the team.</span> <a href="https://github.com/medusajs/medusa/issues/17261">#17261</a> · <a href="https://github.com/medusajs/medusa/pull/17262">PR #17262</a></li>
+  </ul>
+</section>
+
+<section>
+  <h2>Reported, waiting for the maintainers (9)</h2>
+  <ul class="cases">
+    <li><strong>Invoice Ninja · SEPA, BACS, ACH, GoCardless</strong>: a subscription whose payment starts as pending is never completed, so no recurring invoice follows. <span class="st"></span> <a href="https://github.com/invoiceninja/invoiceninja/issues/13343">#13343</a></li>
+    <li><strong>FOSSBilling · Stripe</strong>: subscription renewals are never recorded after the first invoice. <span class="st"></span> <a href="https://github.com/FOSSBilling/FOSSBilling/issues/4522">#4522</a> · <a href="https://github.com/FOSSBilling/FOSSBilling/pull/4523">PR #4523</a></li>
+    <li><strong>Laravel Cashier Mollie</strong>: the webhook answers 200 when fetching the payment from Mollie fails, so a paid first payment never starts the subscription. <span class="st"></span> <a href="https://github.com/mollie/laravel-cashier-mollie/issues/330">#330</a> · <a href="https://github.com/mollie/laravel-cashier-mollie/pull/331">PR #331</a></li>
+    <li><strong>LNbits · fiat payments</strong>: a fiat invoice was failed after one hour while the provider's checkout was still payable, so a later payment was never credited. <span class="st">PR updated after review.</span> <a href="https://github.com/lnbits/lnbits/issues/4245">#4245</a> · <a href="https://github.com/lnbits/lnbits/pull/4246">PR #4246</a></li>
+    <li><strong>Odoo · Mercado Pago</strong>: the webhook answers 200 when fetching the payment from Mercado Pago fails, so it stops retrying. <span class="st"></span> <a href="https://github.com/odoo/odoo/issues/293901">#293901</a></li>
+    <li><strong>django-paypal</strong>: when a receiver raises, PayPal's retry of the same message is flagged as a duplicate and acknowledged, so the payment is never processed. <span class="st"></span> <a href="https://github.com/spookylukey/django-paypal/issues/299">#299</a></li>
+    <li><strong>django-oscar-paypal</strong>: a pending or declined PayPal capture places the order as paid. <span class="st"></span> <a href="https://github.com/django-oscar/django-oscar-paypal/issues/302">#302</a></li>
+    <li><strong>Razorpay for WooCommerce</strong>: with the Payment Action set to “Authorize”, the webhook cron marks orders of authorized payments Failed. <span class="st"></span> <a href="https://github.com/razorpay/razorpay-woocommerce/issues/670">#670</a> · <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-razorpay-woocommerce.md">case</a></li>
+    <li><strong>WooCommerce Stripe Gateway</strong>: a webhook that fails signature validation is answered 204, so Stripe never retries and the order stays pending. <span class="st"></span> <a href="https://github.com/woocommerce/woocommerce-gateway-stripe/issues/4150">#4150</a> · <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-woocommerce-stripe-204.md">case</a></li>
+  </ul>
+</section>
+
+<section>
+  <h2>Your integration</h2>
+  <p>The same checks, run read-only on your logs and database: <a href="/">callback delivery audit</a>. Email: <a href="mailto:hello@terminalstate.dev">hello@terminalstate.dev</a>.</p>
+</section>
+
+<footer>
+  <p>terminalstate · no cookies · page-view counts via Cloudflare Web Analytics · <a href="https://github.com/terminalstate">GitHub</a></p>
+</footer>
+</main>
+<!-- Cloudflare Web Analytics: cookieless page-view counts --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "38f39629fb624caf996b6c0f8fb54e84"}'></script>
+</body>
+</html>

@@ -79,7 +79,7 @@
     <svg viewBox="0 0 36 16" aria-hidden="true"><circle class="start" cx="3.4" cy="8" r="3.1"/><line class="path" x1="5.6" y1="8" x2="16.6" y2="8" stroke-width="2.6" stroke-linecap="round"/><circle class="ring" cx="28.2" cy="8" r="6.3" fill="none" stroke-width="1.9"/><circle class="dot" cx="28.2" cy="8" r="3.3"/></svg>
     <span class="mono">terminalstate</span>
   </div>
-  <div class="nav">Payments · <a href="/ai/">AI integration</a></div>
+  <div class="nav">Payments · <a href="/ai/">AI integration</a> · <a href="/upstream/">Fixed upstream</a></div>
   <h1>Payments that stop short of a terminal state</h1>
   <p class="lead">I connect payment providers and find out why payments hang: webhooks, retries, idempotency, reconciliation. Python and Django, Celery, Kafka, PostgreSQL — on production systems where a bug costs money.</p>
 </header>
@@ -137,6 +137,7 @@
     <li><strong>Razorpay for WooCommerce</strong>: with the Payment Action set to "Authorize", the order of an authorized payment is marked Failed, and the cron marks events done even when the payment couldn't be fetched. <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-razorpay-woocommerce.md">Case</a> · <a href="https://github.com/razorpay/razorpay-woocommerce/issues/670">upstream</a></li>
     <li><strong>Odoo with Mollie</strong>: a failed status request is acknowledged with 200, so the transaction stays in draft. <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-odoo-mollie-200.md">Case</a> · <a href="https://github.com/odoo/odoo/issues/290678">upstream</a> (<a href="https://github.com/odoo/odoo/pull/290812">fixed by Odoo</a>)</li>
   </ul>
+  <p style="margin-top:1rem">All eighteen reports and what happened to each: <a href="/upstream/">fixed upstream</a>. Six are fixed so far, two of them by my own pull requests.</p>
   <p style="margin-top:1rem"><strong>AI integration.</strong> The same discipline, applied to model APIs. Six models on one contract-extraction task: accuracy a tie, cost 35× apart, most errors from the labels — <a href="https://github.com/terminalstate/extraction-bench">extraction-bench</a>. More on the <a href="/ai/">AI integration</a> page.</p>
 </section>
 
