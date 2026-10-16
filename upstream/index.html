@@ -83,7 +83,7 @@
   <div class="nav"><a href="/">Payments</a> · <a href="/ai/">AI integration</a> · Fixed upstream</div>
   <h1>Fixed upstream</h1>
   <p class="lead">Bugs in open-source payment code where a payment ends in the wrong state: the customer is charged and gets no order, or the webhook is acknowledged and the provider stops retrying. Each was reproduced against the project's own code before it was reported, with a test in the project's suite or a harness in <a href="https://github.com/terminalstate/callback-audit/tree/main/repro">callback-audit</a>.</p>
-  <p class="muted">Status as of 16 October 2026.</p>
+  <p class="muted">Status as of 17 October 2026.</p>
 </header>
 
 <section>
@@ -100,22 +100,23 @@
 </section>
 
 <section>
-  <h2>Confirmed, fix in progress (3)</h2>
+  <h2>Confirmed, fix in progress (4)</h2>
   <ul class="cases">
     <li><strong>Adyen for Magento 2 · split payments</strong>: the cause of “Full order amount has not been authorized”: authorised amounts were compared at a different precision than they are stored. <span class="st">Confirmed by the reporter; Adyen opened a ticket and is reviewing my patch.</span> <a href="https://github.com/Adyen/adyen-magento2/issues/3352">#3352</a> · <a href="https://github.com/Adyen/adyen-magento2/pull/3379">PR #3379</a></li>
     <li><strong>Mollie for WooCommerce</strong>: the REST webhook answers 200 when the payment status can't be fetched, so Mollie stops retrying and paid orders stay pending. <span class="st">Confirmed by Mollie; they are preparing a patch.</span> <a href="https://github.com/mollie/WooCommerce/issues/1304">#1304</a> · <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-mollie-woocommerce-200.md">case</a></li>
     <li><strong>Medusa · Stripe</strong>: the webhook signature is checked when the queued job runs, so a delivery already answered 200 is dropped if the job starts more than five minutes after Stripe signed it. <span class="st">My PR passed Medusa's automated review and waits for the team.</span> <a href="https://github.com/medusajs/medusa/issues/17261">#17261</a> · <a href="https://github.com/medusajs/medusa/pull/17262">PR #17262</a></li>
+    <li><strong>LNbits · fiat payments</strong>: a fiat invoice was failed after one hour while the provider's checkout was still payable, so a later payment was never credited. <span class="st">The maintainer agreed on the fix; my PR is updated after review.</span> <a href="https://github.com/lnbits/lnbits/issues/4245">#4245</a> · <a href="https://github.com/lnbits/lnbits/pull/4246">PR #4246</a></li>
   </ul>
 </section>
 
 <section>
   <h2>Reported, waiting for the maintainers (10)</h2>
   <ul class="cases">
+    <li><strong>Paymenter · Stripe SEPA Direct Debit</strong>: when a SEPA payment succeeds after the daily cron has cancelled the unpaid order, the service is marked active but the server is never created. <span class="st"></span> <a href="https://github.com/Paymenter/Paymenter/issues/1378">#1378</a> · <a href="https://github.com/Paymenter/Paymenter/pull/1379">PR #1379</a></li>
     <li><strong>WooCommerce PayPal Payments · iDEAL and other local methods</strong>: when the fee lookup after the capture fails, the webhook still answers 200, so the order stays pending and is later cancelled although PayPal captured the payment. <span class="st"></span> <a href="https://github.com/woocommerce/woocommerce-paypal-payments/issues/4798">#4798</a> · <a href="https://github.com/woocommerce/woocommerce-paypal-payments/pull/4799">PR #4799</a></li>
     <li><strong>FOSSBilling · Stripe currencies</strong>: in COP, HUF, IDR, ISK, PKR, UGX and seven other currencies the total is sent to Stripe in the wrong unit, so the customer is charged 1/100 and the invoice is marked paid. <span class="st"></span> <a href="https://github.com/FOSSBilling/FOSSBilling/issues/4540">#4540</a> · <a href="https://github.com/FOSSBilling/FOSSBilling/pull/4541">PR #4541</a></li>
     <li><strong>Invoice Ninja · SEPA, BACS, ACH, GoCardless</strong>: a subscription whose payment starts as pending is never completed, so no recurring invoice follows. <span class="st"></span> <a href="https://github.com/invoiceninja/invoiceninja/issues/13343">#13343</a></li>
     <li><strong>Laravel Cashier Mollie</strong>: the webhook answers 200 when fetching the payment from Mollie fails, so a paid first payment never starts the subscription. <span class="st"></span> <a href="https://github.com/mollie/laravel-cashier-mollie/issues/330">#330</a> · <a href="https://github.com/mollie/laravel-cashier-mollie/pull/331">PR #331</a></li>
-    <li><strong>LNbits · fiat payments</strong>: a fiat invoice was failed after one hour while the provider's checkout was still payable, so a later payment was never credited. <span class="st">PR updated after review.</span> <a href="https://github.com/lnbits/lnbits/issues/4245">#4245</a> · <a href="https://github.com/lnbits/lnbits/pull/4246">PR #4246</a></li>
     <li><strong>Odoo · Mercado Pago</strong>: the webhook answers 200 when fetching the payment from Mercado Pago fails, so it stops retrying. <span class="st"></span> <a href="https://github.com/odoo/odoo/issues/293901">#293901</a></li>
     <li><strong>django-paypal</strong>: when a receiver raises, PayPal's retry of the same message is flagged as a duplicate and acknowledged, so the payment is never processed. <span class="st"></span> <a href="https://github.com/spookylukey/django-paypal/issues/299">#299</a></li>
     <li><strong>django-oscar-paypal</strong>: a pending or declined PayPal capture places the order as paid. <span class="st"></span> <a href="https://github.com/django-oscar/django-oscar-paypal/issues/302">#302</a></li>
