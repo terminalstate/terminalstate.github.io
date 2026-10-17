@@ -110,9 +110,10 @@
 </section>
 
 <section>
-  <h2>Reported, waiting for the maintainers (10)</h2>
+  <h2>Reported, waiting for the maintainers (11)</h2>
   <ul class="cases">
-    <li><strong>Paymenter · Stripe SEPA Direct Debit</strong>: when a SEPA payment succeeds after the daily cron has cancelled the unpaid order, the service is marked active but the server is never created. <span class="st"></span> <a href="https://github.com/Paymenter/Paymenter/issues/1378">#1378</a> · <a href="https://github.com/Paymenter/Paymenter/pull/1379">PR #1379</a></li>
+    <li><strong>EverShop · Stripe refunds</strong>: a refund made in EverShop is recorded a second time when Stripe's refund notification arrives, so the order shows twice the refunded amount and a full refund sends the customer a second email. <span class="st"></span> <a href="https://github.com/evershopcommerce/evershop/issues/1112">#1112</a></li>
+    <li><strong>Paymenter · Stripe SEPA Direct Debit</strong>: when a SEPA payment succeeds after the daily cron has cancelled the unpaid order, the service is marked active but the server is never created. <span class="st"></span> <a href="https://github.com/Paymenter/Paymenter/issues/1378">#1378</a> · <a href="https://github.com/Paymenter/Paymenter/pull/1381">PR #1381</a></li>
     <li><strong>WooCommerce PayPal Payments · iDEAL and other local methods</strong>: when the fee lookup after the capture fails, the webhook still answers 200, so the order stays pending and is later cancelled although PayPal captured the payment. <span class="st"></span> <a href="https://github.com/woocommerce/woocommerce-paypal-payments/issues/4798">#4798</a> · <a href="https://github.com/woocommerce/woocommerce-paypal-payments/pull/4799">PR #4799</a></li>
     <li><strong>FOSSBilling · Stripe currencies</strong>: in COP, HUF, IDR, ISK, PKR, UGX and seven other currencies the total is sent to Stripe in the wrong unit, so the customer is charged 1/100 and the invoice is marked paid. <span class="st"></span> <a href="https://github.com/FOSSBilling/FOSSBilling/issues/4540">#4540</a> · <a href="https://github.com/FOSSBilling/FOSSBilling/pull/4541">PR #4541</a></li>
     <li><strong>Invoice Ninja · SEPA, BACS, ACH, GoCardless</strong>: a subscription whose payment starts as pending is never completed, so no recurring invoice follows. <span class="st"></span> <a href="https://github.com/invoiceninja/invoiceninja/issues/13343">#13343</a></li>
