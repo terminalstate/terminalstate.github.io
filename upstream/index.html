@@ -83,15 +83,16 @@
   <div class="nav"><a href="/">Payments</a> · <a href="/ai/">AI integration</a> · Fixed upstream</div>
   <h1>Fixed upstream</h1>
   <p class="lead">Bugs in open-source payment code where a payment ends in the wrong state: the customer is charged and gets no order, or the webhook is acknowledged and the provider stops retrying. Each was reproduced against the project's own code before it was reported, with a test in the project's suite or a harness in <a href="https://github.com/terminalstate/callback-audit/tree/main/repro">callback-audit</a>.</p>
-  <p class="muted">Status as of 17 October 2026.</p>
+  <p class="muted">Status as of 18 October 2026.</p>
 </header>
 
 <section>
-  <h2>Fixed (7)</h2>
+  <h2>Fixed (8)</h2>
   <ul class="cases">
     <li><strong>Bagisto · Razorpay</strong>: the order amount was truncated instead of rounded, so totals like ₹19.99 were charged but no order was placed. <span class="st">Fixed by my PR, merged 13 Oct.</span> <a href="https://github.com/bagisto/bagisto/issues/11523">#11523</a> · <a href="https://github.com/bagisto/bagisto/pull/11524">PR #11524</a></li>
     <li><strong>Paid Memberships Pro · Stripe</strong>: the webhook answered 200 when re-fetching the event from Stripe failed, so Stripe never redelivered it. <span class="st">Fixed by my PRs, merged 14 and 15 Oct; the second covers scheduled webhook runs.</span> <a href="https://github.com/strangerstudios/paid-memberships-pro/issues/3889">#3889</a> · <a href="https://github.com/strangerstudios/paid-memberships-pro/pull/3890">PR #3890</a> · <a href="https://github.com/strangerstudios/paid-memberships-pro/pull/3898">PR #3898</a></li>
     <li><strong>FOSSBilling · Stripe</strong>: subscription renewals were never recorded after the first invoice, so Stripe charged the customer and the renewal invoice stayed unpaid. <span class="st">Fixed by my PR, merged 16 Oct.</span> <a href="https://github.com/FOSSBilling/FOSSBilling/issues/4522">#4522</a> · <a href="https://github.com/FOSSBilling/FOSSBilling/pull/4523">PR #4523</a></li>
+    <li><strong>FOSSBilling · Stripe currencies</strong>: in COP, HUF, IDR, ISK, PKR, UGX and seven other currencies the total is sent to Stripe in the wrong unit, so the customer is charged 1/100 and the invoice is marked paid. <span class="st">Fixed by my PR, merged 17 Oct.</span> <a href="https://github.com/FOSSBilling/FOSSBilling/issues/4540">#4540</a> · <a href="https://github.com/FOSSBilling/FOSSBilling/pull/4541">PR #4541</a></li>
     <li><strong>Bagisto · PayPal Standard</strong>: a buyer who paid but didn't return to the store got no order, and every retry of PayPal's notification failed with 500. <span class="st">Fixed by the maintainers on 15 Oct, listed in the changelog.</span> <a href="https://github.com/bagisto/bagisto/issues/11531">#11531</a></li>
     <li><strong>Invoice Ninja · Stripe iDEAL, Bancontact, Klarna</strong>: no payment was recorded when the customer didn't come back from the bank. <span class="st">Fixed by the maintainers on 12 Oct.</span> <a href="https://github.com/invoiceninja/invoiceninja/issues/13341">#13341</a></li>
     <li><strong>django-payments · Sage Pay</strong>: the return route crashed on every real redirect, so no payment was ever confirmed. <span class="st">Fixed by the maintainer on 11 Oct.</span> <a href="https://github.com/jazzband/django-payments/issues/499">#499</a> · <a href="https://github.com/jazzband/django-payments/pull/500">PR #500</a></li>
@@ -110,12 +111,13 @@
 </section>
 
 <section>
-  <h2>Reported, waiting for the maintainers (11)</h2>
+  <h2>Reported, waiting for the maintainers (12)</h2>
   <ul class="cases">
+    <li><strong>Lunar · Stripe</strong>: when listing the payment's charges from Stripe fails once, the paid order is not placed and the payment is marked processed, so no retry places it. <span class="st"></span> <a href="https://github.com/lunarphp/lunar/issues/2781">#2781</a></li>
+    <li><strong>Payfast for WooCommerce</strong>: when the plugin's validation request to Payfast fails, the payment notification is still answered 200, so Payfast never re-sends it and the paid order is cancelled. <span class="st"></span> <a href="https://github.com/woocommerce/woocommerce-gateway-payfast/issues/519">#519</a></li>
     <li><strong>EverShop · Stripe refunds</strong>: a refund made in EverShop is recorded a second time when Stripe's refund notification arrives, so the order shows twice the refunded amount and a full refund sends the customer a second email. <span class="st"></span> <a href="https://github.com/evershopcommerce/evershop/issues/1112">#1112</a></li>
     <li><strong>Paymenter · Stripe SEPA Direct Debit</strong>: when a SEPA payment succeeds after the daily cron has cancelled the unpaid order, the service is marked active but the server is never created. <span class="st"></span> <a href="https://github.com/Paymenter/Paymenter/issues/1378">#1378</a> · <a href="https://github.com/Paymenter/Paymenter/pull/1381">PR #1381</a></li>
     <li><strong>WooCommerce PayPal Payments · iDEAL and other local methods</strong>: when the fee lookup after the capture fails, the webhook still answers 200, so the order stays pending and is later cancelled although PayPal captured the payment. <span class="st"></span> <a href="https://github.com/woocommerce/woocommerce-paypal-payments/issues/4798">#4798</a> · <a href="https://github.com/woocommerce/woocommerce-paypal-payments/pull/4799">PR #4799</a></li>
-    <li><strong>FOSSBilling · Stripe currencies</strong>: in COP, HUF, IDR, ISK, PKR, UGX and seven other currencies the total is sent to Stripe in the wrong unit, so the customer is charged 1/100 and the invoice is marked paid. <span class="st"></span> <a href="https://github.com/FOSSBilling/FOSSBilling/issues/4540">#4540</a> · <a href="https://github.com/FOSSBilling/FOSSBilling/pull/4541">PR #4541</a></li>
     <li><strong>Invoice Ninja · SEPA, BACS, ACH, GoCardless</strong>: a subscription whose payment starts as pending is never completed, so no recurring invoice follows. <span class="st"></span> <a href="https://github.com/invoiceninja/invoiceninja/issues/13343">#13343</a></li>
     <li><strong>Laravel Cashier Mollie</strong>: the webhook answers 200 when fetching the payment from Mollie fails, so a paid first payment never starts the subscription. <span class="st"></span> <a href="https://github.com/mollie/laravel-cashier-mollie/issues/330">#330</a> · <a href="https://github.com/mollie/laravel-cashier-mollie/pull/331">PR #331</a></li>
     <li><strong>Odoo · Mercado Pago</strong>: the webhook answers 200 when fetching the payment from Mercado Pago fails, so it stops retrying. <span class="st"></span> <a href="https://github.com/odoo/odoo/issues/293901">#293901</a></li>
