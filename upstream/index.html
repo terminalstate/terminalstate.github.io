@@ -111,8 +111,10 @@
 </section>
 
 <section>
-  <h2>Reported, waiting for the maintainers (12)</h2>
+  <h2>Reported, waiting for the maintainers (14)</h2>
   <ul class="cases">
+    <li><strong>Akaunting · PayPal Standard</strong>: the payment notification is checked with PayPal using an empty request, so PayPal answers INVALID every time and no PayPal payment is recorded. <span class="st"></span> <a href="https://github.com/akaunting/module-paypal-standard/issues/8">#8</a> · <a href="https://github.com/akaunting/module-paypal-standard/pull/9">PR #9</a></li>
+    <li><strong>BTCPay for WooCommerce</strong>: when the plugin cannot re-fetch a settled invoice from BTCPay Server, the webhook is still answered 200, so BTCPay never redelivers it and the paid order stays on hold. <span class="st"></span> <a href="https://github.com/btcpayserver/woocommerce-greenfield-plugin/issues/93">#93</a></li>
     <li><strong>Lunar · Stripe</strong>: when listing the payment's charges from Stripe fails once, the paid order is not placed and the payment is marked processed, so no retry places it. <span class="st"></span> <a href="https://github.com/lunarphp/lunar/issues/2781">#2781</a></li>
     <li><strong>Payfast for WooCommerce</strong>: when the plugin's validation request to Payfast fails, the payment notification is still answered 200, so Payfast never re-sends it and the paid order is cancelled. <span class="st"></span> <a href="https://github.com/woocommerce/woocommerce-gateway-payfast/issues/519">#519</a></li>
     <li><strong>EverShop · Stripe refunds</strong>: a refund made in EverShop is recorded a second time when Stripe's refund notification arrives, so the order shows twice the refunded amount and a full refund sends the customer a second email. <span class="st"></span> <a href="https://github.com/evershopcommerce/evershop/issues/1112">#1112</a></li>
