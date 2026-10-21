@@ -113,8 +113,10 @@
 </section>
 
 <section>
-  <h2>Reported, waiting for the maintainers (19)</h2>
+  <h2>Reported, waiting for the maintainers (21)</h2>
   <ul class="cases">
+    <li><strong>Vipps MobilePay for WooCommerce · subscriptions</strong>: when the response to creating a renewal charge is lost, the renewal is marked failed, but Vipps still takes the charge and its webhook finds no order, so the subscription goes on hold. <span class="st"></span> <a href="https://github.com/vippsas/vipps-woocommerce/issues/420">#420</a></li>
+    <li><strong>Flutterwave for WooCommerce</strong>: the webhook records a transaction as processed before verifying it, so when verification fails the retry is discarded as a duplicate and the paid order is cancelled. <span class="st"></span> <a href="https://github.com/Flutterwave/Woocommerce-v2/issues/105">#105</a></li>
     <li><strong>Open SaaS · Lemon Squeezy</strong>: a credits purchase by a customer without a subscription is answered 400 on every delivery, so the credits are never added. <span class="st"></span> <a href="https://github.com/wasp-lang/open-saas/issues/755">#755</a></li>
     <li><strong>Adyen for Shopware 6</strong>: a successful authorisation for a transaction that Shopware has already marked failed is processed without paying it, so the captured order stays failed. <span class="st"></span> <a href="https://github.com/Adyen/adyen-shopware6/issues/895">#895</a></li>
     <li><strong>stripe/sync-engine</strong>: when writing a batch of webhook events to Postgres fails, the batch is dropped after Stripe has already been answered 200, so a paid invoice stays open in the database. <span class="st"></span> <a href="https://github.com/stripe/sync-engine/issues/353">#353</a></li>
