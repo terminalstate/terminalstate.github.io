@@ -115,8 +115,10 @@
 </section>
 
 <section>
-  <h2>Reported, waiting for the maintainers (22)</h2>
+  <h2>Reported, waiting for the maintainers (24)</h2>
   <ul class="cases">
+    <li><strong>Paytrail for WooCommerce · manual invoice activation</strong>: when the payment-status request that comes before activating a Walley or Klarna invoice fails, the order is completed as if there were nothing to activate, so the invoice is never activated and nothing on the order says so. <span class="st"></span> <a href="https://github.com/paytrail/paytrail-for-woocommerce/issues/247">#247</a> · <a href="https://github.com/paytrail/paytrail-for-woocommerce/pull/248">PR #248</a></li>
+    <li><strong>GoCardless for WooCommerce · Pay by Bank</strong>: when the bank's answer is still pending at the buyer's return, only a background job attaches the payment; if its one request to GoCardless fails, nothing retries, and the paid order is cancelled. <span class="st"></span> <a href="https://github.com/gocardless/woocommerce-gateway-gocardless/issues/208">#208</a></li>
     <li><strong>WooCommerce Stripe Gateway · cancelled orders</strong>: a payment that succeeds for an order already cancelled when Stripe reports it is dropped before the deferred job that should refund it, so the shopper stays charged for a cancelled order. <span class="st"></span> <a href="https://github.com/woocommerce/woocommerce-gateway-stripe/issues/6130">#6130</a> · <a href="https://github.com/woocommerce/woocommerce-gateway-stripe/pull/6131">PR #6131</a></li>
     <li><strong>Nexi Checkout for WooCommerce</strong>: the webhook is answered 200 at once and settled by one background job; if that job's status request to Nexi fails, nothing retries, so a Swish payment whose buyer didn't return to the shop is cancelled although the customer was charged. <span class="st"></span> <a href="https://github.com/krokedil/dibs-easy-for-woocommerce/issues/367">#367</a></li>
     <li><strong>Paystack for WooCommerce</strong>: when the plugin's verify request to Paystack fails inside the webhook, the delivery is still answered 200, so Paystack never resends it and the paid order is cancelled. <span class="st"></span> <a href="https://github.com/PaystackOSS/woo-paystack/issues/147#issuecomment-6332103424">#147 (comment)</a></li>
