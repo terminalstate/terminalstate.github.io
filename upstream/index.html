@@ -113,8 +113,9 @@
 </section>
 
 <section>
-  <h2>Reported, waiting for the maintainers (23)</h2>
+  <h2>Reported, waiting for the maintainers (24)</h2>
   <ul class="cases">
+    <li><strong>WooCommerce Stripe Gateway · cancelled orders</strong>: a payment that succeeds for an order already cancelled when Stripe reports it is dropped before the deferred job that should refund it, so the shopper stays charged for a cancelled order. <span class="st"></span> <a href="https://github.com/woocommerce/woocommerce-gateway-stripe/issues/6130">#6130</a> · <a href="https://github.com/woocommerce/woocommerce-gateway-stripe/pull/6131">PR #6131</a></li>
     <li><strong>Nexi Checkout for WooCommerce</strong>: the webhook is answered 200 at once and settled by one background job; if that job's status request to Nexi fails, nothing retries, so a Swish payment whose buyer didn't return to the shop is cancelled although the customer was charged. <span class="st"></span> <a href="https://github.com/krokedil/dibs-easy-for-woocommerce/issues/367">#367</a></li>
     <li><strong>Paystack for WooCommerce</strong>: when the plugin's verify request to Paystack fails inside the webhook, the delivery is still answered 200, so Paystack never resends it and the paid order is cancelled. <span class="st"></span> <a href="https://github.com/PaystackOSS/woo-paystack/issues/147#issuecomment-6332103424">#147 (comment)</a></li>
     <li><strong>Vipps MobilePay for WooCommerce · subscriptions</strong>: when the response to creating a renewal charge is lost, the renewal is marked failed, but Vipps still takes the charge and its webhook finds no order, so the subscription goes on hold. <span class="st"></span> <a href="https://github.com/vippsas/vipps-woocommerce/issues/420">#420</a></li>

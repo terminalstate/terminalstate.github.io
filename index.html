@@ -95,14 +95,14 @@
 
 <section>
   <h2>Fixed upstream</h2>
-  <p>The same failures, found in open-source payment code and reproduced against each project's own code before they were reported. Of thirty-seven reports, nine are fixed, four of them by my own pull requests, and five more are in progress. A few of them:</p>
+  <p>The same failures, found in open-source payment code and reproduced against each project's own code before they were reported. Of thirty-eight reports, nine are fixed, four of them by my own pull requests, and five more are in progress. A few of them:</p>
   <ul class="cases">
     <li><strong>Bagisto · Razorpay</strong>: the amount was truncated instead of rounded, so totals like ₹19.99 were charged and no order was placed. Fixed by my PR. <a href="https://github.com/bagisto/bagisto/pull/11524">PR&nbsp;#11524</a></li>
     <li><strong>Paid Memberships Pro · Stripe</strong>: the webhook answered 200 when re-fetching the event from Stripe failed, so Stripe never redelivered it. Fixed by my PRs. <a href="https://github.com/strangerstudios/paid-memberships-pro/pull/3890">PR&nbsp;#3890</a> · <a href="https://github.com/strangerstudios/paid-memberships-pro/pull/3898">PR&nbsp;#3898</a></li>
     <li><strong>Adyen for Magento 2 · split payments</strong>: orders failed with “Full order amount has not been authorized” because authorised amounts were compared at a different precision than they are stored. Confirmed; Adyen is reviewing my patch. <a href="https://github.com/Adyen/adyen-magento2/pull/3379">PR&nbsp;#3379</a></li>
     <li><strong>Odoo · Mollie</strong>: a failed status request to Mollie was acknowledged with 200, so the transaction stayed in draft. Fixed by Odoo. <a href="https://github.com/odoo/odoo/pull/290812">fix</a> · <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-odoo-mollie-200.md">case</a></li>
   </ul>
-  <p class="more"><a href="/upstream/">All thirty-seven, and what happened to each</a></p>
+  <p class="more"><a href="/upstream/">All thirty-eight, and what happened to each</a></p>
 </section>
 
 <section>
