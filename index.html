@@ -95,7 +95,7 @@
 
 <section>
   <h2>Fixed upstream</h2>
-  <p>The same failures, found in open-source payment code and reproduced against each project's own code before they were reported. Of forty-five reports, eleven are fixed, four of them by my own pull requests, and five more are in progress. A few of them:</p>
+  <p>The same failures, found in open-source payment code and reproduced against each project's own code before they were reported. Of forty-five reports, thirteen are fixed, six of them by my own pull requests, and three more are in progress. A few of them:</p>
   <ul class="cases">
     <li><strong>Bagisto · Razorpay</strong>: the amount was truncated instead of rounded, so totals like ₹19.99 were charged and no order was placed. Fixed by my PR. <a href="https://github.com/bagisto/bagisto/pull/11524">PR&nbsp;#11524</a></li>
     <li><strong>Paid Memberships Pro · Stripe</strong>: the webhook answered 200 when re-fetching the event from Stripe failed, so Stripe never redelivered it. Fixed by my PRs. <a href="https://github.com/strangerstudios/paid-memberships-pro/pull/3890">PR&nbsp;#3890</a> · <a href="https://github.com/strangerstudios/paid-memberships-pro/pull/3898">PR&nbsp;#3898</a></li>
