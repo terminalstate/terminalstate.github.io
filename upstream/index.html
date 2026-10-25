@@ -83,7 +83,7 @@
   <div class="nav"><a href="/">Payments</a> · <a href="/ai/">AI integration</a> · Fixed upstream</div>
   <h1>Fixed upstream</h1>
   <p class="lead">Bugs in open-source payment code where a payment ends in the wrong state: the customer is charged and gets no order, or the webhook is acknowledged and the provider stops retrying. Each was reproduced against the project's own code before it was reported, with a test in the project's suite or a harness in <a href="https://github.com/terminalstate/callback-audit/tree/main/repro">callback-audit</a>.</p>
-  <p class="muted">Status as of 24 October 2026.</p>
+  <p class="muted">Status as of 25 October 2026.</p>
 </header>
 
 <section>
@@ -115,8 +115,10 @@
 </section>
 
 <section>
-  <h2>Reported, waiting for the maintainers (34)</h2>
+  <h2>Reported, waiting for the maintainers (36)</h2>
   <ul class="cases">
+    <li><strong>Flexprice · Stripe</strong>: amounts in currencies without minor units, such as JPY and KRW, are multiplied by 100 when a saved card is charged or an invoice is synced to Stripe, so a ¥12,000 invoice is charged as ¥1,200,000 while Flexprice still shows ¥12,000. <span class="st"></span> <a href="https://github.com/flexprice/flexprice/issues/3222">#3222</a></li>
+    <li><strong>Dokploy Cloud · Stripe billing</strong>: after a failed renewal the billing page only offers a new subscription, and once the owner pays it, Stripe's retries of the old one switch all of their servers off again. <span class="st"></span> <a href="https://github.com/Dokploy/dokploy/issues/5770">#5770</a></li>
     <li><strong>dj-stripe · Stripe subscriptions</strong>: since Stripe API 2025-03-31 the billing period is on the subscription items, which dj-stripe doesn't read, so the access check it documents treats a paying subscriber as expired. <span class="st"></span> <a href="https://github.com/dj-stripe/dj-stripe/issues/2252">#2252</a> · <a href="https://github.com/dj-stripe/dj-stripe/pull/2253">PR #2253</a></li>
     <li><strong>Fider · Stripe billing</strong>: when the first charge of a new subscription is declined and paid later, the payment is ignored, so the customer is charged every month and the site stays on the free plan. <span class="st"></span> <a href="https://github.com/getfider/fider/issues/1740">#1740</a></li>
     <li><strong>Contact Form 7 · Stripe</strong>: when a paid submission is not accepted (a quiz or CAPTCHA on the form, a field edited after the first step, a failed e-mail), the paid PaymentIntent is dropped or marked as used, so the buyer is asked to pay again or the paid submission is rejected as spam. <span class="st">Reported on the WordPress.org support forum: the plugin takes no GitHub issues. The plugin's author is looking into it.</span> <a href="https://wordpress.org/support/topic/stripe-bug-failed-validation-loses-paymentintent-charging-the-buyer-twice/">forum topic</a></li>
