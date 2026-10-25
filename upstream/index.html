@@ -115,8 +115,10 @@
 </section>
 
 <section>
-  <h2>Reported, waiting for the maintainers (36)</h2>
+  <h2>Reported, waiting for the maintainers (38)</h2>
   <ul class="cases">
+    <li><strong>Charitable · PayPal Standard</strong>: when the postback that verifies an IPN with PayPal gets no answer at all, the listener still answers 200, so PayPal stops resending and the donation stays pending although the donor has paid. <span class="st">Reported on the WordPress.org support forum: the plugin has no public repository.</span> <a href="https://wordpress.org/support/topic/paypal-standard-failed-ipn-verification-answers-200-donation-stays-pending/">forum topic</a></li>
+    <li><strong>Mercado Pago for WooCommerce</strong>: the merchant_order IPN adds a flat 1.00 for each payment instead of that payment’s coupon amount, so an order paid with a Mercado Pago coupon is left pending and a small order can be marked paid on money that never arrived. <span class="st">Reported on the WordPress.org support forum: the plugin takes no GitHub issues.</span> <a href="https://wordpress.org/support/topic/merchant_order-ipn-adds-1-00-per-payment-instead-of-the-coupon-amount/">forum topic</a></li>
     <li><strong>Flexprice · Stripe</strong>: amounts in currencies without minor units, such as JPY and KRW, are multiplied by 100 when a saved card is charged or an invoice is synced to Stripe, so a ¥12,000 invoice is charged as ¥1,200,000 while Flexprice still shows ¥12,000. <span class="st"></span> <a href="https://github.com/flexprice/flexprice/issues/3222">#3222</a></li>
     <li><strong>Dokploy Cloud · Stripe billing</strong>: after a failed renewal the billing page only offers a new subscription, and once the owner pays it, Stripe's retries of the old one switch all of their servers off again. <span class="st"></span> <a href="https://github.com/Dokploy/dokploy/issues/5770">#5770</a></li>
     <li><strong>dj-stripe · Stripe subscriptions</strong>: since Stripe API 2025-03-31 the billing period is on the subscription items, which dj-stripe doesn't read, so the access check it documents treats a paying subscriber as expired. <span class="st"></span> <a href="https://github.com/dj-stripe/dj-stripe/issues/2252">#2252</a> · <a href="https://github.com/dj-stripe/dj-stripe/pull/2253">PR #2253</a></li>
