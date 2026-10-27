@@ -106,8 +106,9 @@
 </section>
 
 <section>
-  <h2>Confirmed, fix in progress (4)</h2>
+  <h2>Confirmed, fix in progress (5)</h2>
   <ul class="cases">
+    <li><strong>Invoice Ninja · Razorpay</strong>: the Razorpay webhook handler is an empty stub, so when the customer closes the tab before the checkout posts back, Razorpay captures the payment but Invoice Ninja never records it and the invoice stays unpaid. <span class="st">The maintainers asked for a pull request on 27 Oct; mine is open.</span> <a href="https://github.com/invoiceninja/invoiceninja/issues/13394">#13394</a> · <a href="https://github.com/invoiceninja/invoiceninja/pull/13397">PR #13397</a></li>
     <li><strong>Charitable · PayPal Standard</strong>: when the postback that verifies an IPN with PayPal gets no answer at all, the listener still answers 200, so PayPal stops resending and the donation stays pending although the donor has paid. <span class="st">Confirmed by the maintainers on 25 Oct: the fix is in 1.8.14, due in the next few days, and answers 503 when the postback fails so PayPal resends the notification.</span> <a href="https://wordpress.org/support/topic/paypal-standard-failed-ipn-verification-answers-200-donation-stays-pending/">forum topic</a></li>
     <li><strong>Adyen for Magento 2 · split payments</strong>: the cause of “Full order amount has not been authorized”: authorised amounts were compared at a different precision than they are stored. <span class="st">Confirmed by the reporter; Adyen opened a ticket and is reviewing my patch.</span> <a href="https://github.com/Adyen/adyen-magento2/issues/3352">#3352</a> · <a href="https://github.com/Adyen/adyen-magento2/pull/3379">PR #3379</a></li>
     <li><strong>Mollie for WooCommerce</strong>: the REST webhook answers 200 when the payment status can't be fetched, so Mollie stops retrying and paid orders stay pending. <span class="st">Confirmed by Mollie; they are preparing a patch.</span> <a href="https://github.com/mollie/WooCommerce/issues/1304">#1304</a> · <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-mollie-woocommerce-200.md">case</a></li>
@@ -116,9 +117,8 @@
 </section>
 
 <section>
-  <h2>Reported, waiting for the maintainers (40)</h2>
+  <h2>Reported, waiting for the maintainers (39)</h2>
   <ul class="cases">
-    <li><strong>Invoice Ninja · Razorpay</strong>: the Razorpay webhook handler is an empty stub, so when the customer closes the tab before the checkout posts back, Razorpay captures the payment but Invoice Ninja never records it and the invoice stays unpaid. <span class="st"></span> <a href="https://github.com/invoiceninja/invoiceninja/issues/13394">#13394</a></li>
     <li><strong>Hexclave (formerly Stack Auth) · payments</strong>: a subscription bought through a purchase URL for a custom customer is recorded as a team’s, so the customer is charged every month, never gets the product, and can be sent through checkout and charged for it again. <span class="st">Found by reading the code, not reproduced.</span> <a href="https://github.com/hexclave/hexclave/issues/2131">#2131</a></li>
     <li><strong>Ghostfolio · Premium via Stripe</strong>: Premium is granted only when the buyer’s browser comes back through Stripe’s success redirect; there is no webhook, so a buyer who closes the tab after paying is charged and stays on Basic. <span class="st">Found by reading the code, not reproduced.</span> <a href="https://github.com/ghostfolio/ghostfolio/issues/8318">#8318</a></li>
     <li><strong>Mercado Pago for WooCommerce</strong>: the merchant_order IPN adds a flat 1.00 for each payment instead of that payment’s coupon amount, so an order paid with a Mercado Pago coupon is left pending and a small order can be marked paid on money that never arrived. <span class="st">Reported on the WordPress.org support forum: the plugin takes no GitHub issues.</span> <a href="https://wordpress.org/support/topic/merchant_order-ipn-adds-1-00-per-payment-instead-of-the-coupon-amount/">forum topic</a></li>
