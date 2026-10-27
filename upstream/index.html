@@ -116,8 +116,9 @@
 </section>
 
 <section>
-  <h2>Reported, waiting for the maintainers (39)</h2>
+  <h2>Reported, waiting for the maintainers (40)</h2>
   <ul class="cases">
+    <li><strong>Invoice Ninja · Razorpay</strong>: the Razorpay webhook handler is an empty stub, so when the customer closes the tab before the checkout posts back, Razorpay captures the payment but Invoice Ninja never records it and the invoice stays unpaid. <span class="st"></span> <a href="https://github.com/invoiceninja/invoiceninja/issues/13394">#13394</a></li>
     <li><strong>Hexclave (formerly Stack Auth) · payments</strong>: a subscription bought through a purchase URL for a custom customer is recorded as a team’s, so the customer is charged every month, never gets the product, and can be sent through checkout and charged for it again. <span class="st">Found by reading the code, not reproduced.</span> <a href="https://github.com/hexclave/hexclave/issues/2131">#2131</a></li>
     <li><strong>Ghostfolio · Premium via Stripe</strong>: Premium is granted only when the buyer’s browser comes back through Stripe’s success redirect; there is no webhook, so a buyer who closes the tab after paying is charged and stays on Basic. <span class="st">Found by reading the code, not reproduced.</span> <a href="https://github.com/ghostfolio/ghostfolio/issues/8318">#8318</a></li>
     <li><strong>Mercado Pago for WooCommerce</strong>: the merchant_order IPN adds a flat 1.00 for each payment instead of that payment’s coupon amount, so an order paid with a Mercado Pago coupon is left pending and a small order can be marked paid on money that never arrived. <span class="st">Reported on the WordPress.org support forum: the plugin takes no GitHub issues.</span> <a href="https://wordpress.org/support/topic/merchant_order-ipn-adds-1-00-per-payment-instead-of-the-coupon-amount/">forum topic</a></li>
