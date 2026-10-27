@@ -83,7 +83,7 @@
   <div class="nav"><a href="/">Payments</a> · <a href="/ai/">AI integration</a> · Fixed upstream</div>
   <h1>Fixed upstream</h1>
   <p class="lead">Bugs in open-source payment code where a payment ends in the wrong state: the customer is charged and gets no order, or the webhook is acknowledged and the provider stops retrying. Each was reproduced against the project's own code before it was reported, with a test in the project's suite or a harness in <a href="https://github.com/terminalstate/callback-audit/tree/main/repro">callback-audit</a>.</p>
-  <p class="muted">Status as of 26 October 2026.</p>
+  <p class="muted">Status as of 27 October 2026.</p>
 </header>
 
 <section>
@@ -116,8 +116,9 @@
 </section>
 
 <section>
-  <h2>Reported, waiting for the maintainers (38)</h2>
+  <h2>Reported, waiting for the maintainers (39)</h2>
   <ul class="cases">
+    <li><strong>Hexclave (formerly Stack Auth) · payments</strong>: a subscription bought through a purchase URL for a custom customer is recorded as a team’s, so the customer is charged every month, never gets the product, and can be sent through checkout and charged for it again. <span class="st">Found by reading the code, not reproduced.</span> <a href="https://github.com/hexclave/hexclave/issues/2131">#2131</a></li>
     <li><strong>Ghostfolio · Premium via Stripe</strong>: Premium is granted only when the buyer’s browser comes back through Stripe’s success redirect; there is no webhook, so a buyer who closes the tab after paying is charged and stays on Basic. <span class="st">Found by reading the code, not reproduced.</span> <a href="https://github.com/ghostfolio/ghostfolio/issues/8318">#8318</a></li>
     <li><strong>Mercado Pago for WooCommerce</strong>: the merchant_order IPN adds a flat 1.00 for each payment instead of that payment’s coupon amount, so an order paid with a Mercado Pago coupon is left pending and a small order can be marked paid on money that never arrived. <span class="st">Reported on the WordPress.org support forum: the plugin takes no GitHub issues.</span> <a href="https://wordpress.org/support/topic/merchant_order-ipn-adds-1-00-per-payment-instead-of-the-coupon-amount/">forum topic</a></li>
     <li><strong>Flexprice · Stripe</strong>: amounts in currencies without minor units, such as JPY and KRW, are multiplied by 100 when a saved card is charged or an invoice is synced to Stripe, so a ¥12,000 invoice is charged as ¥1,200,000 while Flexprice still shows ¥12,000. <span class="st">Another contributor has opened a pull request with the proposed fix.</span> <a href="https://github.com/flexprice/flexprice/issues/3222">#3222</a></li>
