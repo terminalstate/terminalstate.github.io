@@ -83,7 +83,7 @@
   <div class="nav"><a href="/">Payments</a> · <a href="/ai/">AI integration</a> · Fixed upstream</div>
   <h1>Fixed upstream</h1>
   <p class="lead">Bugs in open-source payment code where a payment ends in the wrong state: the customer is charged and gets no order, or the webhook is acknowledged and the provider stops retrying. Each was reproduced against the project's own code before it was reported, with a test in the project's suite or a harness in <a href="https://github.com/terminalstate/callback-audit/tree/main/repro">callback-audit</a>.</p>
-  <p class="muted">Status as of 27 October 2026.</p>
+  <p class="muted">Status as of 28 October 2026.</p>
 </header>
 
 <section>
@@ -104,6 +104,7 @@
     <li><strong>django-payments · Sage Pay</strong>: the return route crashed on every real redirect, so no payment was ever confirmed. <span class="st">Fixed by the maintainer on 11 Oct.</span> <a href="https://github.com/jazzband/django-payments/issues/499">#499</a> · <a href="https://github.com/jazzband/django-payments/pull/500">PR #500</a></li>
     <li><strong>Odoo · Mollie</strong>: a failed status request to Mollie was acknowledged with 200, so the transaction stayed in draft. <span class="st">Fixed by Odoo on 8 Oct.</span> <a href="https://github.com/odoo/odoo/issues/290678">#290678</a> · <a href="https://github.com/odoo/odoo/pull/290812">fix</a> · <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-odoo-mollie-200.md">case</a></li>
   </ul>
+  <p class="muted" style="margin-top:1rem">Not counted above, since someone else reported the bug: in <strong>Standard Webhooks</strong>, the webhook signing spec, the Python library's sign() signed the wrong timestamp for a timezone-aware datetime outside UTC, so the receiver rejected every such webhook. Fixed by my PR, merged 28 Oct. <a href="https://github.com/standard-webhooks/standard-webhooks/pull/334">PR #334</a></p>
 </section>
 
 <section>
