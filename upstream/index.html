@@ -119,8 +119,9 @@
 </section>
 
 <section>
-  <h2>Reported, waiting for the maintainers (39)</h2>
+  <h2>Reported, waiting for the maintainers (40)</h2>
   <ul class="cases">
+    <li><strong>Open Collective · Stripe SEPA/ACH/Bacs</strong>: changing the amount of a recurring contribution while its bank debit is still processing removes the only link to that payment, so when the debit settles the webhook finds nothing, answers 200, and the contributor has paid with no transaction recorded. <span class="st"></span> <a href="https://github.com/opencollective/opencollective/issues/9041">#9041</a></li>
     <li><strong>Saleor · Stripe app</strong>: a brief Stripe error while the storefront processes a payment is recorded as a final failed charge, and Saleor then ignores the success from Stripe’s webhook because it is older, so the customer is charged and the transaction shows nothing charged. <span class="st"></span> <a href="https://github.com/saleor/apps/issues/2448">#2448</a></li>
     <li><strong>Hexclave (formerly Stack Auth) · payments</strong>: a subscription bought through a purchase URL for a custom customer is recorded as a team’s, so the customer is charged every month, never gets the product, and can be sent through checkout and charged for it again. <span class="st">Found by reading the code, not reproduced.</span> <a href="https://github.com/hexclave/hexclave/issues/2131">#2131</a></li>
     <li><strong>Ghostfolio · Premium via Stripe</strong>: Premium is granted only when the buyer’s browser comes back through Stripe’s success redirect; there is no webhook, so a buyer who closes the tab after paying is charged and stays on Basic. <span class="st">Found by reading the code, not reproduced.</span> <a href="https://github.com/ghostfolio/ghostfolio/issues/8318">#8318</a></li>
