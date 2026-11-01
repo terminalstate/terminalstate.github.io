@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>terminalstate — how payment integrations break</title>
+<meta name="description" content="The handful of failures that turn up across payment providers and stacks: webhooks acknowledged before they apply, payments that need the buyer to return, double charges on retry, wrong currency units, access without a settled payment.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://terminalstate.dev/patterns/">
+<meta property="og:title" content="terminalstate — how payment integrations break">
+<meta property="og:description" content="The handful of failures that turn up across payment providers and stacks, in plain terms, with how to tell whether yours has one.">
+<meta property="og:image" content="https://terminalstate.dev/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --fg: #1c1c1a;
+    --muted: #62625d;
+    --rule: #e2e0d9;
+    --accent: #0f6b5c;
+    --card: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141513;
+      --fg: #e7e6e1;
+      --muted: #9d9c95;
+      --rule: #2c2d29;
+      --accent: #5fc3ad;
+      --card: #1b1c19;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  main { max-width: 44rem; margin: 0 auto; padding: 3.5rem 1rem 4rem; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  a:hover { text-decoration-thickness: 2px; }
+  code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.92em; }
+  header { margin-bottom: 2.5rem; }
+  .brand { display: flex; align-items: center; gap: 0.6rem; font-size: 1.05rem; font-weight: 600; }
+  .brand svg { width: 2.6rem; height: 1.16rem; flex: none; }
+  .brand circle.start { fill: var(--accent); }
+  .brand line.path { stroke: var(--accent); }
+  .brand circle.ring { stroke: var(--fg); }
+  .brand circle.dot { fill: var(--fg); }
+  .nav { font-size: 0.95rem; margin-top: 0.5rem; }
+  .nav a { color: var(--muted); }
+  h1 { font-size: clamp(1.9rem, 5vw, 2.5rem); line-height: 1.2; margin: 1.6rem 0 1rem; letter-spacing: -0.01em; }
+  h2 { font-size: 1.25rem; margin: 3rem 0 0.8rem; padding-top: 1.6rem; border-top: 1px solid var(--rule); }
+  p { margin: 0 0 1rem; }
+  .lead { font-size: 1.12rem; }
+  .muted { color: var(--muted); }
+  .patterns { list-style: none; padding: 0; margin: 1.2rem 0 0; display: grid; gap: 0.9rem; }
+  .patterns li { background: var(--card); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; }
+  .patterns h3 { font-size: 1.05rem; margin: 0 0 0.15rem; }
+  .patterns .mech { color: var(--muted); font-size: 0.93rem; margin-bottom: 0.45rem; }
+  .patterns p { margin: 0; }
+  footer { margin-top: 3.5rem; padding-top: 1.2rem; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="brand">
+    <svg viewBox="0 0 36 16" aria-hidden="true"><circle class="start" cx="3.4" cy="8" r="3.1"/><line class="path" x1="5.6" y1="8" x2="16.6" y2="8" stroke-width="2.6" stroke-linecap="round"/><circle class="ring" cx="28.2" cy="8" r="6.3" fill="none" stroke-width="1.9"/><circle class="dot" cx="28.2" cy="8" r="3.3"/></svg>
+    <span class="mono">terminalstate</span>
+  </div>
+  <div class="nav"><a href="/">Payments</a> · <a href="/ai/">AI integration</a> · <a href="/upstream/">Fixed upstream</a> · Common bugs</div>
+  <h1>How payment integrations break</h1>
+  <p class="lead">The same small set of failures turns up across providers and stacks. They sit between the provider and your database, not in a language or a framework, so WooCommerce and Magento, Odoo and Medusa, and custom backends fail the same way. Here they are in plain terms, with how to tell whether yours has one. The real cases behind each are on the <a href="/upstream/">fixed upstream</a> page.</p>
+</header>
+
+<section>
+  <h2>The patterns</h2>
+  <ul class="patterns">
+    <li>
+      <h3>Acknowledged before it is applied</h3>
+      <div class="mech">The webhook answers 200, then the status lookup fails.</div>
+      <p>The provider sends the final status, your endpoint answers 200, and only afterwards tries to fetch or verify the event. When that fetch fails, the 200 has already told the provider everything is fine, so it never resends. The money moved; your database never heard. You see payments that sit pending for hours, with a fetch or verify error in the log just before a 200.</p>
+    </li>
+    <li>
+      <h3>Only landed if the buyer comes back</h3>
+      <div class="mech">The final status is attached on the return redirect, not by webhook.</div>
+      <p>The payment is tied to the order only when the browser returns to the shop. A buyer who pays and closes the tab, common with 3-D Secure, bank redirects and wallets, is charged while the order is cancelled as unpaid. Look for cancelled or pending orders that line up with no return visit, with redirect methods over-represented.</p>
+    </li>
+    <li>
+      <h3>Charged twice on a retry</h3>
+      <div class="mech">A lost response is retried without an idempotency key.</div>
+      <p>When the response to a charge is lost to a timeout or a 5xx, the integration marks it failed and tries again, or the same webhook is delivered twice and handled twice. Either way the customer is charged twice, or a renewal is booked twice. Duplicate charges that cluster around timeouts, or one provider event id processed more than once, are the signs.</p>
+    </li>
+    <li>
+      <h3>The wrong currency unit</h3>
+      <div class="mech">Minor units multiplied or divided by a hundred.</div>
+      <p>Currencies without minor units, such as JPY and KRW, or a mix-up between major and minor units, send the amount to the provider a hundred times too high or too low. The customer is charged a hundred times too much or too little while your side still shows the right number. It shows up as a few currencies that are always wrong, and a gap between your amount and the settled amount.</p>
+    </li>
+    <li>
+      <h3>Access without a settled payment</h3>
+      <div class="mech">The order completes before the capture clears.</div>
+      <p>The order is marked complete, or a subscription made active, while the capture is still pending, under review or already declined. The customer gets the goods, the level or the plan with no money behind it, and the later denial is never handled. Active subscriptions or completed orders with no matching settled payment are the tell.</p>
+    </li>
+    <li>
+      <h3>A cron that races the payment</h3>
+      <div class="mech">A scheduled job cancels the order while the payment settles.</div>
+      <p>A background job cancels unpaid orders on a timer, and the real payment settles a moment later through a different path, so a paid order is cancelled. Or a late event stamped with its creation time overwrites a newer status and sends a finished payment back to pending. Watch for paid orders flipped to cancelled by a scheduled task, and statuses that move backwards.</p>
+    </li>
+    <li>
+      <h3>A refund or chargeback counted twice, or not at all</h3>
+      <div class="mech">The provider notification repeats what your system already did.</div>
+      <p>A refund made in your system is recorded again when the provider's notification arrives, so the order shows twice the refund and the customer gets a second email. Or a dispute is parsed wrong and never recorded at all. Refunded totals that do not match the provider, and disputes missing from the books, point here.</p>
+    </li>
+  </ul>
+</section>
+
+<section>
+  <h2>Recognise one of these?</h2>
+  <p>Each is a real case in the <a href="/upstream/">list of bugs fixed upstream</a>, found in open-source payment code and reproduced against it before it was reported. The same checks, run read-only on your own logs and database, are a <a href="/#audit">callback delivery audit</a>. A symptom and one payment id are enough to start: <a href="mailto:hello@terminalstate.dev">hello@terminalstate.dev</a>.</p>
+</section>
+
+<footer>
+  <p>terminalstate · no cookies · page-view counts via Cloudflare Web Analytics · <a href="https://github.com/terminalstate">GitHub</a></p>
+</footer>
+</main>
+<!-- Cloudflare Web Analytics: cookieless page-view counts --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "38f39629fb624caf996b6c0f8fb54e84"}'></script>
+</body>
+</html>
