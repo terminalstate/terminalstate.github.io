@@ -83,7 +83,7 @@
   <div class="nav"><a href="/">Payments</a> · <a href="/ai/">AI integration</a> · Fixed upstream · <a href="/patterns/">Common bugs</a></div>
   <h1>Fixed upstream</h1>
   <p class="lead">Bugs in open-source payment code where a payment ends in the wrong state: the customer is charged and gets no order, or the webhook is acknowledged and the provider stops retrying. Each was reproduced against the project's own code before it was reported, with a test in the project's suite or a harness in <a href="https://github.com/terminalstate/callback-audit/tree/main/repro">callback-audit</a>.</p>
-  <p class="muted">Status as of 1 November 2026.</p>
+  <p class="muted">Status as of 2 November 2026.</p>
 </header>
 
 <section>
@@ -124,8 +124,9 @@
 </section>
 
 <section>
-  <h2>Reported, waiting for the maintainers (47)</h2>
+  <h2>Reported, waiting for the maintainers (48)</h2>
   <ul class="cases">
+    <li><strong>WP User Frontend · PayPal</strong>: when the plugin's own request to PayPal to verify a webhook fails, the delivery is still answered 200, so PayPal never resends it and a recurring pack, or a one-time payment whose capture reply was lost, is charged but never granted. <span class="st"></span> <a href="https://github.com/weDevsOfficial/wp-user-frontend/pull/1872#issuecomment-6555702378">PR #1872 (comment)</a></li>
     <li><strong>Payment Plugins for Stripe WooCommerce</strong>: when one read of the PaymentIntent fails while a succeeded event is handled, the plugin puts a new PaymentIntent on the order in place of the paid one and still answers 200, so a paid SEPA order stays on-hold and a manual resend from Stripe finds no order. <span class="st">Reported on the WordPress.org support forum: the plugin takes no GitHub issues.</span> <a href="https://wordpress.org/support/topic/paid-sepa-order-stays-on-hold-and-a-webhook-resend-does-not-fix-it/">forum topic</a></li>
     <li><strong>solidus_stripe</strong>: when the buyer pays but never comes back to the store, the webhook completes the payment and leaves the order unplaced, and paying again in the same session charges the card a second time. <span class="st"></span> <a href="https://github.com/solidusio/solidus_stripe/issues/339">#339</a> · <a href="https://github.com/solidusio/solidus_stripe/pull/340">PR #340</a></li>
     <li><strong>LearnPress · PayPal subscriptions</strong>: the subscription webhook answers 200 to every error, including a timed-out signature check, so PayPal never re-sends a renewal or activation that failed. <span class="st"></span> <a href="https://github.com/LearnPress/learnpress/issues/650">#650</a></li>
