@@ -83,7 +83,7 @@
   <div class="nav"><a href="/">Payments</a> · <a href="/ai/">AI integration</a> · Fixed upstream · <a href="/patterns/">Common bugs</a></div>
   <h1>Fixed upstream</h1>
   <p class="lead">Bugs in open-source payment code where a payment ends in the wrong state: the customer is charged and gets no order, or the webhook is acknowledged and the provider stops retrying. Each was reproduced against the project's own code before it was reported, with a test in the project's suite or a harness in <a href="https://github.com/terminalstate/callback-audit/tree/main/repro">callback-audit</a>.</p>
-  <p class="muted">Status as of 11 November 2026.</p>
+  <p class="muted">Status as of 14 November 2026.</p>
 </header>
 
 <section>
@@ -127,18 +127,19 @@
 </section>
 
 <section>
-  <h2>Confirmed, fix in progress (5)</h2>
+  <h2>Confirmed, fix in progress (6)</h2>
   <ul class="cases">
     <li><strong>Mollie for WooCommerce</strong>: the REST webhook answers 200 when the payment status can't be fetched, so Mollie stops retrying and paid orders stay pending. <span class="st">Confirmed by Mollie; they are preparing a patch.</span> <a href="https://github.com/mollie/WooCommerce/issues/1304">#1304</a> · <a href="https://github.com/terminalstate/callback-audit/blob/main/docs/case-mollie-woocommerce-200.md">case</a></li>
     <li><strong>Medusa · Stripe</strong>: the webhook signature is checked when the queued job runs, so a delivery already answered 200 is dropped if the job starts more than five minutes after Stripe signed it. <span class="st">My PR passed Medusa's automated review; a new rule closed it until the issue is assigned, which I have asked for.</span> <a href="https://github.com/medusajs/medusa/issues/17261">#17261</a> · <a href="https://github.com/medusajs/medusa/pull/17262">PR #17262</a></li>
     <li><strong>Formidable Forms · PayPal</strong>: a capture that PayPal declined or left pending inside a completed order is saved as a complete payment, and the form's Successful Payment actions run. <span class="st">Formidable added it to the 7.1 milestone (2 Nov).</span> <a href="https://github.com/Strategy11/formidable-forms/issues/3617">#3617</a></li>
     <li><strong>Hexclave (formerly Stack Auth) · payments</strong>: a subscription bought through a purchase URL for a custom customer is recorded as a team’s, so the customer is charged every month, never gets the product, and can be sent through checkout and charged for it again. <span class="st">Found by reading the code, not reproduced. Hexclave opened a fix on 3 Nov, not yet merged.</span> <a href="https://github.com/hexclave/hexclave/issues/2131">#2131</a> · <a href="https://github.com/hexclave/hexclave/pull/2145">fix #2145</a></li>
     <li><strong>LatePoint · Razorpay</strong>: since 5.6.11 the webhook no longer saves the payment id before creating the booking, so a customer who pays but doesn't come back to the booking form is charged, and every delivery of the captured payment is answered 400 with no booking. <span class="st">LatePoint says the next update will change how the Razorpay payment.captured webhook completes these bookings (6 Nov).</span> <a href="https://wordpress.org/support/topic/razorpay-payment-captured-but-no-booking-when-the-customer-does-not-return/">forum topic</a></li>
+    <li><strong>Pay. for Magento 2</strong>: when the plugin's status request to Pay. fails, the payment notification is still answered TRUE, so Pay. never retries it and the paid order is cancelled. <span class="st">Pay. added an error code for it in their PHP SDK 2.1.2 and closed the issue; the module change comes in their next release (13 Nov).</span> <a href="https://github.com/paynl/magento2-plugin/issues/248">#248</a> · <a href="https://github.com/paynl/magento2-plugin/pull/249">PR #249</a></li>
   </ul>
 </section>
 
 <section>
-  <h2>Reported, waiting for the maintainers (47)</h2>
+  <h2>Reported, waiting for the maintainers (46)</h2>
   <ul class="cases">
     <li><strong>Spree PayPal Checkout 0.7.1 · Spree 5.x</strong>: a PayPal capture that is still pending or was declined marks the Spree order paid, and a later denial can't undo it. With a gift card or store credit on the order, PayPal charges the full order total, so the buyer pays the covered part twice. <span class="st">Found by reading the code, not reproduced. Fixed in the new PayPal provider for Spree 6.0, reported for the 5.x gem.</span> <a href="https://github.com/spree/spree_paypal_checkout/issues/20">#20</a></li>
     <li><strong>PAYONE for Magento 2 · Prepayment</strong>: cancelling an unpaid Prepayment order in Magento leaves it payable at PAYONE, and when the transfer arrives later the plugin moves the cancelled order to Processing and, with automatic invoicing on, to Complete with an invoice for the shipping only, so the customer has paid, the items stay cancelled and the order reads as done. <span class="st">Found by reading the code, not reproduced.</span> <a href="https://github.com/PAYONE-GmbH/magento-2/issues/639">#639</a></li>
@@ -173,7 +174,6 @@
     <li><strong>Flutterwave for WooCommerce</strong>: the webhook records a transaction as processed before verifying it, so when verification fails the retry is discarded as a duplicate and the paid order is cancelled. <span class="st"></span> <a href="https://github.com/Flutterwave/Woocommerce-v2/issues/105">#105</a></li>
     <li><strong>stripe/sync-engine</strong>: when writing a batch of webhook events to Postgres fails, the batch is dropped after Stripe has already been answered 200, so a paid invoice stays open in the database. <span class="st"></span> <a href="https://github.com/stripe/sync-engine/issues/353">#353</a></li>
     <li><strong>Amazon Pay for Magento 2</strong>: with “Charge when order is placed”, a capture that Amazon declines is still invoiced as paid at checkout, and the later Declined notification is skipped as a duplicate. <span class="st"></span> <a href="https://github.com/amzn/amazon-payments-magento-2-plugin/issues/1304">#1304</a></li>
-    <li><strong>Pay. for Magento 2</strong>: when the plugin's status request to Pay. fails, the payment notification is still answered TRUE, so Pay. never retries it and the paid order is cancelled. <span class="st"></span> <a href="https://github.com/paynl/magento2-plugin/issues/248">#248</a> · <a href="https://github.com/paynl/magento2-plugin/pull/249">PR #249</a></li>
     <li><strong>Checkout.com for WooCommerce</strong>: in classic mode a 3-D Secure payment is linked to the order only when the buyer comes back to the shop, so if they don't, every webhook for the captured payment is rejected and the paid order is cancelled. <span class="st"></span> <a href="https://github.com/checkout/checkout-woocommerce-plugin/issues/431">#431</a></li>
     <li><strong>Akaunting · PayPal Standard</strong>: the payment notification is checked with PayPal using an empty request, so PayPal answers INVALID every time and no PayPal payment is recorded. <span class="st"></span> <a href="https://github.com/akaunting/module-paypal-standard/issues/8">#8</a> · <a href="https://github.com/akaunting/module-paypal-standard/pull/9">PR #9</a></li>
     <li><strong>Lunar · Stripe</strong>: when listing the payment's charges from Stripe fails once, the paid order is not placed and the payment is marked processed, so no retry places it. <span class="st"></span> <a href="https://github.com/lunarphp/lunar/issues/2781">#2781</a></li>
